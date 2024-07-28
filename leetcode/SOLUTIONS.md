@@ -70,6 +70,7 @@
 ||[918. 环形子数组的最大和](https://leetcode.cn/problems/maximum-sum-circular-subarray/)|[【图解】没有思路？一张图秒懂！](https://leetcode.cn/problems/maximum-sum-circular-subarray/solution/mei-you-si-lu-yi-zhang-tu-miao-dong-pyth-ilqh/)|1777|
 ||[1186. 删除一次得到子数组最大和](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/maximum-subarray-sum-with-one-deletion/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-hzz6/)|1799|
 ||[790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)|[【图解】找不到规律？请看图！](https://leetcode.cn/problems/domino-and-tromino-tiling/solution/by-endlesscheng-umpp/)|1830|
+||[1227. 飞机座位分配概率](https://leetcode.cn/problems/airplane-seat-assignment-probability/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/airplane-seat-assignment-probability/solution/tu-jie-mei-xiang-ming-bai-yi-zhang-tu-mi-8bn4/)|中等|
 ||[2008. 出租车的最大盈利](https://leetcode.cn/problems/maximum-earnings-from-taxi/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/maximum-earnings-from-taxi/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-k15a/)|1872|
 ||[823. 带因子的二叉树](https://leetcode.cn/problems/binary-trees-with-factors/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/binary-trees-with-factors/solution/cong-ji-yi-hua-sou-suo-dao-di-tui-jiao-n-nbk6/)|1900|
 ||[1043. 分隔数组以得到最大和](https://leetcode.cn/problems/partition-array-for-maximum-sum/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/partition-array-for-maximum-sum/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-rq5i/)|1916|
@@ -103,7 +104,8 @@
 ||[1883. 准时抵达会议现场的最小跳过休息次数](https://leetcode.cn/problems/minimum-skips-to-arrive-at-meeting-on-time/)|[【避免浮点误差】教你一步步思考动态规划！](https://leetcode.cn/problems/minimum-skips-to-arrive-at-meeting-on-time/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-gxd2/)|2588|
 ||[2902. 和带限制的子多重集合的数目](https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/)|[多重背包方案数：从朴素 DP 到优化](https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/solution/duo-zhong-bei-bao-fang-an-shu-cong-po-su-f5ay/)|2758|
 ||[2809. 使数组和小于等于 x 的最少时间](https://leetcode.cn/problems/minimum-time-to-make-array-sum-at-most-x/)|[教你一步步思考本题！](https://leetcode.cn/problems/minimum-time-to-make-array-sum-at-most-x/solution/jiao-ni-yi-bu-bu-si-kao-ben-ti-by-endles-2eho/)|2979|
-|数学|[1954. 收集足够苹果的最小花园周长](https://leetcode.cn/problems/minimum-garden-perimeter-to-collect-enough-apples/)|[【图解】O(1) 做法](https://leetcode.cn/problems/minimum-garden-perimeter-to-collect-enough-apples/solution/tu-jie-o1-zuo-fa-pythonjavacgojsrust-by-oms4k/)|1759|
+|数学|[50. Pow(x, n)](https://leetcode.cn/problems/powx-n/)|[【图解】一张图秒懂快速幂！](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)|中等|
+||[1954. 收集足够苹果的最小花园周长](https://leetcode.cn/problems/minimum-garden-perimeter-to-collect-enough-apples/)|[【图解】O(1) 做法](https://leetcode.cn/problems/minimum-garden-perimeter-to-collect-enough-apples/solution/tu-jie-o1-zuo-fa-pythonjavacgojsrust-by-oms4k/)|1759|
 ||[1016. 子串能表示从 1 到 N 数字的二进制串](https://leetcode.cn/problems/binary-string-with-substrings-representing-1-to-n/)|[三种算法：从暴力到优化](https://leetcode.cn/problems/binary-string-with-substrings-representing-1-to-n/solution/san-chong-suan-fa-cong-bao-li-dao-you-hu-nmtq/)|1779|
 ||[1015. 可被 K 整除的最小整数](https://leetcode.cn/problems/smallest-integer-divisible-by-k/)|[【图解】三种算法+优化](https://leetcode.cn/problems/smallest-integer-divisible-by-k/solution/san-chong-suan-fa-you-hua-pythonjavacgo-tk4cj/)|1875|
 ||[754. 到达终点数字](https://leetcode.cn/problems/reach-a-number/)|[【图解】分类讨论+详细证明+简洁写法+优化](https://leetcode.cn/problems/reach-a-number/solution/fen-lei-tao-lun-xiang-xi-zheng-ming-jian-sqj2/)|1880|
@@ -156,7 +158,7 @@
 
 ### 分类题单
 
-**以下题单没有特定的顺序，可以按照个人喜好刷题。**
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)

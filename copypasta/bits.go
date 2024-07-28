@@ -407,10 +407,10 @@ func NewBitset(n int) Bitset { return make(Bitset, (n+_w-1)/_w) } // 需要 ceil
 
 type Bitset []uint
 
-func (b Bitset) Has(p int) bool { return b[p/_w]&(1<<(p%_w)) != 0 } // get
-func (b Bitset) Flip(p int)     { b[p/_w] ^= 1 << (p % _w) }
-func (b Bitset) Set(p int)      { b[p/_w] |= 1 << (p % _w) }  // 置 1
-func (b Bitset) Reset(p int)    { b[p/_w] &^= 1 << (p % _w) } // 置 0
+func (b Bitset) Has(p int) bool { return b[p/_w]&(1<<(p%_w)) != 0 } // get / test
+func (b Bitset) Set(p int)      { b[p/_w] |= 1 << (p % _w) }        // 置 1
+func (b Bitset) Reset(p int)    { b[p/_w] &^= 1 << (p % _w) }       // 置 0
+func (b Bitset) Flip(p int)     { b[p/_w] ^= 1 << (p % _w) }        // 翻转
 
 func (b Bitset) SetAll1() {
 	for i := range b {
@@ -487,6 +487,7 @@ func (b Bitset) Next0(p int) int {
 }
 
 // 返回最后第一个 1 的下标，若不存在则返回 -1
+// 注意 Lsh 后超出 n 的 1
 func (b Bitset) LastIndex1() int {
 	for i := len(b) - 1; i >= 0; i-- {
 		if b[i] != 0 {
@@ -497,10 +498,10 @@ func (b Bitset) LastIndex1() int {
 }
 
 // += 1 << i，模拟进位
-func (b Bitset) Add(i int) { b.FlipRange(i, b.Next0(i)) }
+func (b Bitset) Add(i int) { b.FlipRange(i, b.Next0(i)+1) }
 
 // -= 1 << i，模拟借位
-func (b Bitset) Sub(i int) { b.FlipRange(i, b.Next1(i)) }
+func (b Bitset) Sub(i int) { b.FlipRange(i, b.Next1(i)+1) }
 
 // 判断 [l,r] 范围内的数是否全为 0
 // https://codeforces.com/contest/1107/problem/D（标准做法是二维前缀和）
@@ -599,7 +600,9 @@ func (b Bitset) ResetFrom(start int) {
 }
 
 // 左移 k 位
+// 注意左移后，超出 n 的 1
 // LC1981 https://leetcode.cn/problems/minimize-the-difference-between-target-and-chosen-elements/
+// LC3181 https://leetcode.cn/problems/maximum-total-reward-using-operations-ii/ 
 func (b Bitset) Lsh(k int) {
 	if k == 0 {
 		return
@@ -692,16 +695,31 @@ func (b Bitset) OnesCount() (c int) {
 func (b Bitset) TrailingZeros() int { return b.Index1() }
 func (b Bitset) Len() int           { return b.LastIndex1() + 1 }
 
-func (b Bitset) String() string {
-	idx := &strings.Builder{}
+// 返回所有是 1 的位置
+func (b Bitset) AllIndex1() (idx1 []int) {
 	for i, v := range b {
 		for ; v > 0; v &= v - 1 {
 			j := i*_w | bits.TrailingZeros(v)
-			idx.WriteString(strconv.Itoa(j))
-			idx.WriteByte(' ')
+			idx1 = append(idx1, j)
 		}
 	}
-	return idx.String()
+	return
+}
+
+func (b Bitset) String() string {
+	bin := &strings.Builder{}
+	for i := len(b) - 1; i >= 0; i-- {
+		v := b[i]
+		if bin.Len() == 0 {
+			if v == 0 {
+				continue
+			}
+			bin.WriteString(strconv.FormatUint(uint64(v), 2))
+		} else {
+			bin.WriteString(Sprintf("%0*b", _w, v))
+		}
+	}
+	return bin.String()
 }
 
 // 注：有关子集枚举的位运算技巧，见 search.go
@@ -714,6 +732,9 @@ func _(x int) {
 
 	// 最低位的 0 变 1
 	x |= x + 1
+
+	// 补满 1
+	x = 1<<bits.Len(uint(x)) - 1
 
 	// x 是 y 的子集
 	isSubset := func(x, y int) bool { return x|y == y } // x 和 y 的并集是 y
@@ -737,6 +758,13 @@ func _(x int) {
 		return x & y &^ (1<<bits.Len(uint(x^y)) - 1)
 	}
 	rangeAND := lcp
+
+	// x 和 y 二进制的最长公共前缀的长度（只统计公共的）
+	// max(x,y) 的二进制长度 - x^y 的二进制长度
+	// https://codeforces.com/problemset/problem/1901/C
+	lcpLen := func(x, y int) int {
+		return bits.Len(uint(max(x, y))) - bits.Len(uint(x^y))
+	}
 
 	// x 和 y 二进制的最长公共后缀
 	lcs := func(x, y int) int {
@@ -814,7 +842,9 @@ func _(x int) {
 		return
 	}
 
-	// logTrick 的简单版本
+	//
+
+	// logTrick 的简单版本 · 其一
 	// 例如 https://leetcode.cn/problems/shortest-subarray-with-or-at-least-k-ii/
 	// 分析见 https://leetcode.cn/problems/smallest-subarrays-with-maximum-bitwise-or/solution/by-endlesscheng-zai1/
 	logTrickSimple := func(a []int, k int) int {
@@ -834,13 +864,83 @@ func _(x int) {
 				}
 			}
 			// 循环结束后，原数组的 OR(a[l:r+1]) 记录在 a[l] 中
-			// 对于更一般的场合，可以在 a[:r+1] 中二分查找 target
+			// 对于更一般的场合（比如求子数组个数），可以在 a[:r+1] 中二分查找 target，
+			// 或者用三指针找值为 target 的子数组个数，见下面的 logTrickSimpleCntK
 		}
 		if ans == math.MaxInt {
 			ans = -1
 		}
 		return ans
 	}
+
+	// logTrick 的简单版本 · 其二
+	// 找 op 值为 k 的子数组个数
+	// 支持 AND OR GCD 等
+	// https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/
+	logTrickSimpleCntK := func(a []int, k int, op func(int, int) int) int {
+		ans := 0
+		cnt := 0
+		for i, v := range a {
+			if v == k {
+				cnt++
+			}
+			for j := i - 1; j >= 0 && op(a[j], v) != a[j]; j-- {
+				if a[j] == k {
+					cnt--
+				}
+				a[j] = op(a[j], v)
+				if a[j] == k {
+					cnt++
+				}
+			}
+			ans += cnt
+		}
+		return ans
+	}
+
+	// logTrick 的简单版本 · 其三
+	// 返回 op(子数组) 的所有不同结果
+	// 讲解 https://leetcode.cn/problems/bitwise-ors-of-subarrays/solution/logtrick-ji-qi-jin-jie-tong-ji-mei-ge-ji-rleb/
+	// https://leetcode.cn/problems/bitwise-ors-of-subarrays/
+	logTrickSimpleAllRes := func(a []int, op func(int, int) int) map[int]bool {
+		has := map[int]bool{}
+		for i, v := range a {
+			has[v] = true
+			for j := i - 1; j >= 0 && op(a[j], v) != a[j]; j-- {
+				a[j] = op(a[j], v)
+				has[a[j]] = true
+			}
+		}
+		return has
+	}
+
+	// logTrick 的简单版本 · 其四
+	// 返回 op(子数组) 的所有不同结果及其出现次数
+	// 注：效率不如 logTrickCnt
+	// https://codeforces.com/problemset/problem/475/D 2000
+	logTrickSimpleAllResCnt := func(a []int, op func(int, int) int) map[int]int {
+		cnt := map[int]int{}
+		endICnt := map[int]int{} // 以 i 结尾的 op(子数组) 的不同结果及其出现次数
+		for i, v := range a {
+			endICnt[v]++
+			for j := i - 1; j >= 0 && op(a[j], v) != a[j]; j-- {
+				pre := a[j]
+				endICnt[pre]--
+				if endICnt[pre] == 0 {
+					delete(endICnt, pre) // 保证 len(endICnt) = O(log U)
+				}
+				a[j] = op(a[j], v)
+				endICnt[a[j]]++
+			}
+			for opRes, c := range endICnt {
+				cnt[opRes] += c
+			}
+		}
+		return cnt
+	}
+
+	// 需要注意的是，上面计算的内容，丢失了「子数组值为 s 时，左端点的下标范围」的信息，所以适用性更广的写法见更后面的 logTrickCnt
+	// 例如 https://codeforces.com/problemset/problem/1632/D (2000) 用 logTrickCnt 写起来更简单
 
 	// 对于数组 a 的所有区间，返回 op(区间元素) 的全部运算结果
 	// 利用操作的单调性求解
@@ -913,6 +1013,7 @@ func _(x int) {
 				curRes[j].v = op(p.v, v)
 			}
 			curRes = append(curRes, result{v, i, i + 1})
+
 			// 去重（合并 v 相同的 result）
 			j := 1
 			for k := 1; k < len(curRes); k++ {
@@ -924,6 +1025,7 @@ func _(x int) {
 				}
 			}
 			curRes = curRes[:j]
+
 			// 此时我们将区间 [0,i] 划分成了 len(set) 个左闭右开区间
 			// 对于任意 p∈set，任意 j∈[p.l,p.r)，op(区间[j,i]) 的计算结果均为 p.v
 			for _, p := range curRes {
@@ -1063,10 +1165,11 @@ func _(x int) {
 
 	_ = []interface{}{
 		lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros,
-		lcp, lcs, rangeAND, rangeOR, rangeXor,
+		lcp, lcpLen, lcs, rangeAND, rangeOR, rangeXor,
 		bits31, _bits31, _bits32, initEvenZeros,
 		leastXor,
-		logTrickSimple, logTrick, logTrickCnt, countSumEqMul,
+		logTrickSimple, logTrickSimpleCntK, logTrickSimpleAllRes, logTrickSimpleAllResCnt,
+		logTrick, logTrickCnt, countSumEqMul,
 		zeroXorSum3,
 		maxXorWithLimit,
 	}
