@@ -63,33 +63,30 @@ $$
 
 可以在「计算幂次个数」的同时计算 $\texttt{sumE}$。
 
-得到了幂次之和，用**快速幂**计算 $2$ 的幂模 $\textit{mod}$，即为答案。关于快速幂，见 [50. Pow(x, n)](https://leetcode-cn.com/problems/powx-n/)。
+得到了幂次之和，可以用**快速幂**计算 $2$ 的幂模 $\textit{mod}$，即为答案。原理见[【图解】一张图秒懂快速幂](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)。
 
-代码中用到的位运算技巧，见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+代码中用到了一些位运算技巧，原理见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
+
+代码实现时，乘以 $2^{i-1}$ 可以写成 `<< (i - 1)`。为了避免特判 $i=0$ 的情况，`<< (i - 1)` 可以用 `<< i >> 1` 代替
 
 ```py [sol-Python3]
 class Solution:
     def findProductsOfElements(self, queries: List[List[int]]) -> List[int]:
         def sum_e(k: int) -> int:
             res = n = cnt1 = sum_i = 0
-            for i in range((k + 1).bit_length() - 1, 0, -1):
-                c = (cnt1 << i) + (i << (i - 1))  # 新增的幂次个数
+            for i in range((k + 1).bit_length() - 1, -1, -1):
+                c = (cnt1 << i) + (i << i >> 1)  # 新增的幂次个数
                 if c <= k:
                     k -= c
-                    res += (sum_i << i) + ((i * (i - 1) // 2) << (i - 1))
+                    res += (sum_i << i) + ((i * (i - 1) // 2) << i >> 1)
                     sum_i += i  # 之前填的 1 的幂次之和
                     cnt1 += 1  # 之前填的 1 的个数
                     n |= 1 << i  # 填 1
-            # 最低位单独计算
-            if cnt1 <= k:
-                k -= cnt1
-                res += sum_i
-                n += 1  # 填 1
             # 剩余的 k 个幂次，由 n 的低 k 个 1 补充
             for _ in range(k):
                 lb = n & -n
                 res += lb.bit_length() - 1
-                n ^= lb
+                n ^= lb  # 去掉最低位的 1（置为 0）
             return res
         return [pow(2, sum_e(r + 1) - sum_e(l), mod) for l, r, mod in queries]
 ```
@@ -108,33 +105,30 @@ class Solution {
     }
 
     private long sumE(long k) {
-        long res = 0, n = 0, cnt1 = 0, sumI = 0;
-        for (long i = 63 - Long.numberOfLeadingZeros(k + 1); i > 0; i--) {
-            long c = (cnt1 << i) + (i << (i - 1)); // 新增的幂次个数
+        long res = 0;
+        long n = 0;
+        long cnt1 = 0; // 之前填的 1 的个数
+        long sumI = 0; // 之前填的 1 的幂次之和
+        for (long i = 63 - Long.numberOfLeadingZeros(k + 1); i >= 0; i--) {
+            long c = (cnt1 << i) + (i << i >> 1); // 新增的幂次个数
             if (c <= k) {
                 k -= c;
-                res += (sumI << i) + ((i * (i - 1) / 2) << (i - 1));
-                sumI += i; // 之前填的 1 的幂次之和
-                cnt1++; // 之前填的 1 的个数
+                res += (sumI << i) + ((i * (i - 1) / 2) << i >> 1);
+                sumI += i;
+                cnt1++;
                 n |= 1L << i; // 填 1
             }
-        }
-        // 最低位单独计算
-        if (cnt1 <= k) {
-            k -= cnt1;
-            res += sumI;
-            n++; // 填 1
         }
         // 剩余的 k 个幂次，由 n 的低 k 个 1 补充
         while (k-- > 0) {
             res += Long.numberOfTrailingZeros(n);
-            n &= n - 1;
+            n &= n - 1; // 去掉最低位的 1（置为 0）
         }
         return res;
     }
 
     private int pow(long x, long n, long mod) {
-        long res = 1 % mod;
+        long res = 1 % mod; // 注意 mod 可能等于 1
         for (; n > 0; n /= 2) {
             if (n % 2 == 1) {
                 res = res * x % mod;
@@ -149,7 +143,7 @@ class Solution {
 ```cpp [sol-C++]
 class Solution {
     int pow(long long x, long long n, long long mod) {
-        long long res = 1 % mod;
+        long long res = 1 % mod; // 注意 mod 可能等于 1
         for (; n; n /= 2) {
             if (n % 2) {
                 res = res * x % mod;
@@ -160,27 +154,21 @@ class Solution {
     }
 
     long long sum_e(long long k) {
-        long long res = 0, n = 0, cnt1 = 0, sumI = 0;
-        for (long long i = 63 - __builtin_clzll(k + 1); i; i--) {
-            long long c = (cnt1 << i) + (i << (i - 1)); // 新增的幂次个数
+        long long res = 0, n = 0, cnt1 = 0, sum_i = 0;
+        for (long long i = __lg(k + 1); i >= 0; i--) {
+            long long c = (cnt1 << i) + (i << i >> 1); // 新增的幂次个数
             if (c <= k) {
                 k -= c;
-                res += (sumI << i) + ((i * (i - 1) / 2) << (i - 1));
-                sumI += i; // 之前填的 1 的幂次之和
+                res += (sum_i << i) + ((i * (i - 1) / 2) << i >> 1);
+                sum_i += i; // 之前填的 1 的幂次之和
                 cnt1++; // 之前填的 1 的个数
                 n |= 1LL << i; // 填 1
             }
         }
-        // 最低位单独计算
-        if (cnt1 <= k) {
-            k -= cnt1;
-            res += sumI;
-            n++; // 填 1
-        }
         // 剩余的 k 个幂次，由 n 的低 k 个 1 补充
         while (k--) {
             res += __builtin_ctzll(n);
-            n &= n - 1;
+            n &= n - 1; // 去掉最低位的 1（置为 0）
         }
         return res;
     }
@@ -200,50 +188,44 @@ public:
 
 ```go [sol-Go]
 func sumE(k int) (res int) {
-	var n, cnt1, sumI int
-	for i := bits.Len(uint(k+1)) - 1; i > 0; i-- {
-		c := cnt1<<i + i<<(i-1) // 新增的幂次个数
-		if c <= k {
-			k -= c
-			res += sumI<<i + i*(i-1)/2<<(i-1)
-			sumI += i   // 之前填的 1 的幂次之和
-			cnt1++      // 之前填的 1 的个数
-			n |= 1 << i // 填 1
-		}
-	}
-	// 最低位单独计算
-	if cnt1 <= k {
-		k -= cnt1
-		res += sumI
-		n++ // 填 1
-	}
-	// 剩余的 k 个幂次，由 n 的低 k 个 1 补充
-	for ; k > 0; k-- {
-		res += bits.TrailingZeros(uint(n))
-		n &= n - 1
-	}
-	return
-}
-
-func findProductsOfElements(queries [][]int64) []int {
-	ans := make([]int, len(queries))
-	for i, q := range queries {
-		er := sumE(int(q[1]) + 1)
-		el := sumE(int(q[0]))
-		ans[i] = pow(2, er-el, int(q[2]))
-	}
-	return ans
+    var n, cnt1, sumI int
+    for i := bits.Len(uint(k+1)) - 1; i >= 0; i-- {
+        c := cnt1<<i + i<<i>>1 // 新增的幂次个数
+        if c <= k {
+            k -= c
+            res += sumI<<i + i*(i-1)/2<<i>>1
+            sumI += i   // 之前填的 1 的幂次之和
+            cnt1++      // 之前填的 1 的个数
+            n |= 1 << i // 填 1
+        }
+    }
+    // 剩余的 k 个幂次，由 n 的低 k 个 1 补充
+    for ; k > 0; k-- {
+        res += bits.TrailingZeros(uint(n))
+        n &= n - 1 // 去掉最低位的 1（置为 0）
+    }
+    return
 }
 
 func pow(x, n, mod int) int {
-	res := 1 % mod
-	for ; n > 0; n /= 2 {
-		if n%2 > 0 {
-			res = res * x % mod
-		}
-		x = x * x % mod
-	}
-	return res
+    res := 1 % mod // 注意 mod 可能等于 1
+    for ; n > 0; n /= 2 {
+        if n%2 > 0 {
+            res = res * x % mod
+        }
+        x = x * x % mod
+    }
+    return res
+}
+
+func findProductsOfElements(queries [][]int64) []int {
+    ans := make([]int, len(queries))
+    for i, q := range queries {
+        er := sumE(int(q[1]) + 1)
+        el := sumE(int(q[0]))
+        ans[i] = pow(2, er-el, int(q[2]))
+    }
+    return ans
 }
 ```
 
@@ -260,17 +242,19 @@ func pow(x, n, mod int) int {
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
 

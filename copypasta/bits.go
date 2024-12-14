@@ -865,7 +865,7 @@ func _(x int) {
 			}
 			// 循环结束后，原数组的 OR(a[l:r+1]) 记录在 a[l] 中
 			// 对于更一般的场合（比如求子数组个数），可以在 a[:r+1] 中二分查找 target，
-			// 或者用三指针找值为 target 的子数组个数，见下面的 logTrickSimpleCntK
+			// 或者用三指针找值为 target 的子数组个数，见下面的 logTrickSimpleTargetPos
 		}
 		if ans == math.MaxInt {
 			ans = -1
@@ -874,22 +874,22 @@ func _(x int) {
 	}
 
 	// logTrick 的简单版本 · 其二
-	// 找 op 值为 k 的子数组个数
+	// 计算子数组 op 值恰好为 target 的子数组个数
 	// 支持 AND OR GCD 等
 	// https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/
-	logTrickSimpleCntK := func(a []int, k int, op func(int, int) int) int {
+	logTrickSimpleCntTarget := func(a []int, target int, op func(int, int) int) int {
 		ans := 0
 		cnt := 0
 		for i, v := range a {
-			if v == k {
+			if v == target {
 				cnt++
 			}
 			for j := i - 1; j >= 0 && op(a[j], v) != a[j]; j-- {
-				if a[j] == k {
+				if a[j] == target {
 					cnt--
 				}
 				a[j] = op(a[j], v)
-				if a[j] == k {
+				if a[j] == target {
 					cnt++
 				}
 			}
@@ -898,7 +898,30 @@ func _(x int) {
 		return ans
 	}
 
-	// logTrick 的简单版本 · 其三
+	// logTrick 的简单版本 · 其三（三指针）
+	// 当子数组右端点为 i 且子数组 op 值恰好为 target 时，计算子数组左端点的范围
+	// https://leetcode.cn/problems/number-of-subarrays-with-and-value-of-k/ 题解方法二
+	// https://leetcode.cn/problems/minimum-sum-of-values-by-dividing-array/ 结合单调队列优化 DP
+	logTrickSimpleTargetPos := func(a []int, target int, op func(int, int) int) {
+		left, right := 0, 0
+		for i, x := range a {
+			for j := i - 1; j >= 0 && op(a[j], x) != a[j]; j-- {
+				a[j] = op(a[j], x)
+			}
+			for left <= i && a[left] < target {
+				left++
+			}
+			for right <= i && a[right] <= target {
+				right++
+			}
+			// 右端点为 i 且子数组 op 值恰好为 target 时，
+			// 子数组左端点的范围为左闭右开区间 [left, right)
+			// 处理 [left, right) 的逻辑写在这里 ...
+			
+		}
+	}
+
+	// logTrick 的简单版本 · 其四
 	// 返回 op(子数组) 的所有不同结果
 	// 讲解 https://leetcode.cn/problems/bitwise-ors-of-subarrays/solution/logtrick-ji-qi-jin-jie-tong-ji-mei-ge-ji-rleb/
 	// https://leetcode.cn/problems/bitwise-ors-of-subarrays/
@@ -914,7 +937,7 @@ func _(x int) {
 		return has
 	}
 
-	// logTrick 的简单版本 · 其四
+	// logTrick 的简单版本 · 其五
 	// 返回 op(子数组) 的所有不同结果及其出现次数
 	// 注：效率不如 logTrickCnt
 	// https://codeforces.com/problemset/problem/475/D 2000
@@ -1163,15 +1186,59 @@ func _(x int) {
 		return 2*mid - 1 - b, 2*mid - 1 - a
 	}
 
+	// 给定 multiplier >= 2
+	// O(1) 计算把任意正整数 x 通过不断乘 multiplier，直到 >= y，需要乘多少次
+	// 原理：
+	// 设 <= x 的最大 2 的幂为 2^i，即 x = k1 * 2^i，其中 1 <= k1 < 2
+	// 设 <= y 的最大 2 的幂为 2^j，即 y = k2 * 2^j，其中 1 <= k2 < 2
+	// 那么 ceil(log_m (y/x)) = ceil(log_m (k2/k1)2^(j-i)) ≈ ceil(log_m 2^(j-i))，误差 ± 1，因为 1/2 < k2/k1 < 2
+	// LC3266 https://leetcode.cn/problems/final-array-state-after-k-multiplication-operations-ii/
+	fastMulToTarget := func(multiplier int) {
+		// 打表，计算出最小的 e 满足 multiplier^e >= 2^i
+		const mx int = 1e9 // 所有 y 的最大值
+		type ep struct{ e, powM int }
+		ePowM := make([]ep, 0, bits.Len(uint(mx)))
+		for pow2, powM, e := 1, 1, 0; pow2 <= mx; pow2 <<= 1 {
+			if powM < pow2 { // 由于 multiplier >= 2，这里只需写 if 而不是 for
+				powM *= multiplier
+				e++
+			}
+			ePowM = append(ePowM, ep{e, powM})
+		}
+
+		// 返回最小的 e，满足 x * multiplier^e >= y
+		// 额外返回 powM = multiplier^e
+		fastMul := func(x, y int) (e, powM int) {
+			if x >= y {
+				return 0, 1
+			}
+			p := ePowM[bits.Len(uint(y))-bits.Len(uint(x))]
+			e, powM = p.e, p.powM
+			if powM/multiplier*x >= y { // 多乘了一次
+				powM /= multiplier
+				e--
+			} else if x*powM < y { // 少乘了一次
+				powM *= multiplier
+				e++
+			}
+			return
+		}
+
+		_ = fastMul
+	}
+
 	_ = []interface{}{
 		lowbit, isSubset, isPow2, hasAdjacentOnes, hasAdjacentZeros,
 		lcp, lcpLen, lcs, rangeAND, rangeOR, rangeXor,
 		bits31, _bits31, _bits32, initEvenZeros,
 		leastXor,
-		logTrickSimple, logTrickSimpleCntK, logTrickSimpleAllRes, logTrickSimpleAllResCnt,
+
+		logTrickSimple, logTrickSimpleCntTarget, logTrickSimpleTargetPos, logTrickSimpleAllRes, logTrickSimpleAllResCnt,
 		logTrick, logTrickCnt, countSumEqMul,
+
 		zeroXorSum3,
 		maxXorWithLimit,
+		fastMulToTarget,
 	}
 }
 

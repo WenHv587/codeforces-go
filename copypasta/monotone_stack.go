@@ -1,6 +1,9 @@
 package copypasta
 
-import "sort"
+import (
+	"slices"
+	"sort"
+)
 
 /* 单调栈 Monotone Stack
 
@@ -47,11 +50,19 @@ https://cp-algorithms.com/data_structures/stack_queue_modification.html
     - 环形数组 https://codeforces.com/problemset/problem/5/E 2400
 - [2454. 下一个更大元素 IV](https://leetcode.cn/problems/next-greater-element-iv/) 2175
     - 应用 https://atcoder.jp/contests/abc140/tasks/abc140_e
+    - 应用 https://codeforces.com/problemset/problem/1736/C2 2400 用的是队列，但思路是一样的
 - [2289. 使数组按非递减顺序排列](https://leetcode.cn/problems/steps-to-make-array-non-decreasing/) 2482
 - [1776. 车队 II](https://leetcode.cn/problems/car-fleet-ii/) 2531
 - [2832. 每个元素为最大值的最大范围](https://leetcode.cn/problems/maximal-range-that-each-element-is-maximum-in-it/)（会员题）
-转换 https://codeforces.com/problemset/problem/280/B 1800
-max >= sum https://codeforces.com/problemset/problem/1691/D 1800
+https://codeforces.com/problemset/problem/280/B 1800 转换
+https://codeforces.com/problemset/problem/1691/D 1800 max >= sum
+https://codeforces.com/problemset/problem/1919/D 2100 结论
+
+#### 单调栈二分
+https://codeforces.com/problemset/problem/91/B 1500
+https://codeforces.com/problemset/problem/2009/G2 2200
+LC2940 https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/ 2327 做法不止一种
+LC2736 https://leetcode.cn/problems/maximum-sum-queries/ 2533
 
 #### 矩形系列
 - [84. 柱状图中最大的矩形](https://leetcode.cn/problems/largest-rectangle-in-histogram/)
@@ -68,6 +79,8 @@ max >= sum https://codeforces.com/problemset/problem/1691/D 1800
 - [321. 拼接最大数](https://leetcode.cn/problems/create-maximum-number/)
 - [2030. 含特定字母的最小子序列](https://leetcode.cn/problems/smallest-k-length-subsequence-with-occurrences-of-a-letter/) 2562
 https://codeforces.com/problemset/problem/1730/C 1200
+https://codeforces.com/problemset/problem/1905/C 1400
+https://codeforces.com/problemset/problem/1870/D 1800
 双序列 https://atcoder.jp/contests/arc134/tasks/arc134_d
 
 #### 贡献法（计算所有子数组的……的和）
@@ -94,9 +107,6 @@ https://codeforces.com/problemset/problem/1913/D 2100
 - 原题 https://tlx.toki.id/problems/ksn-2021/2A
 https://codeforces.com/problemset/problem/1407/D 2200
 https://codeforces.com/problemset/problem/5/E 2400
-
-#### 单调栈二分
-https://codeforces.com/problemset/problem/91/B 1500
 
 其他
 LC42 接雨水 https://leetcode.cn/problems/trapping-rain-water/
@@ -126,15 +136,10 @@ func monotoneStack(a []int) ([]int, []int) {
 	// 如果改成求左侧小于等于，那么 a[i] 就是区间 [left[i]+1,i] 内独一无二的最小元素
 	// 不存在时 left[i] = -1
 	// 虽然写了个二重循环，但站在每个元素的视角看，这个元素在二重循环中最多入栈出栈各一次，因此整个二重循环的时间复杂度为 O(n)
-	n := len(a)
-	left := make([]int, n)
+	left := make([]int, len(a))
 	st := []int{-1} // 栈底哨兵，在栈为空时可以直接把 left[i] 赋值为 -1
 	for i, v := range a {
-		// 求左侧 <  v : >=
-		// 求左侧 <= v : >
-		// 求左侧 >  v : <=
-		// 求左侧 >= v : <
-		for len(st) > 1 && a[st[len(st)-1]] >= v { // 这里的符号和要求的是反过来的
+		for len(st) > 1 && a[st[len(st)-1]] >= v {
 			st = st[:len(st)-1]
 		}
 		// 不断弹出 >= v 的，那么循环结束后栈顶就是 < v 的
@@ -145,18 +150,18 @@ func monotoneStack(a []int) ([]int, []int) {
 	// 求右侧严格小于 a[i] 的最近位置 right[i]，这样 a[i] 就是区间 [i,right[i]-1] 内最小的元素（之一）
 	// 如果改成求右侧小于等于，那么 a[i] 就是区间 [i,right[i]-1] 内独一无二的最小元素
 	// 不存在时 right[i] = n
-	right := make([]int, n)
-	st = []int{n}
-	for i := n - 1; i >= 0; i-- {
-		v := a[i]
-		for len(st) > 1 && a[st[len(st)-1]] >= v { // 同上
+	right := make([]int, len(a))
+	st = []int{len(a)} // 栈底哨兵，在栈为空时可以直接把 right[i] 赋值为 len(a)
+	for i, v := range slices.Backward(a) {
+		for len(st) > 1 && a[st[len(st)-1]] >= v {
 			st = st[:len(st)-1]
 		}
+		// 不断弹出 >= v 的，那么循环结束后栈顶就是 < v 的
 		right[i] = st[len(st)-1]
 		st = append(st, i)
 	}
 
-	sum := make([]int, n+1)
+	sum := make([]int, len(a)+1)
 	for i, v := range a {
 		sum[i+1] = (sum[i] + v) % mod
 	}
@@ -173,8 +178,8 @@ func monotoneStack(a []int) ([]int, []int) {
 
 	{
 		// TIPS: 如果有一侧定义成小于等于，还可以一次遍历求出 left 和 right
-		left := make([]int, n)  // a[left[i]] < a[i]
-		right := make([]int, n) // a[right[i]] <= a[i]
+		left := make([]int, len(a))  // a[left[i]] < a[i]
+		right := make([]int, len(a)) // a[right[i]] <= a[i]
 		st := []int{-1}
 		for i, v := range a {
 			for len(st) > 1 && v <= a[st[len(st)-1]] {
@@ -191,6 +196,7 @@ func monotoneStack(a []int) ([]int, []int) {
 	}
 
 	{
+		n := len(a)
 		// 不需要栈的写法！
 		// left[i] 为左侧严格小于 a[i] 的最近元素位置（不存在时为 -1）
 		left := make([]int, n)
@@ -236,7 +242,7 @@ func monotoneStack(a []int) ([]int, []int) {
 	// https://codeforces.com/problemset/problem/547/B 
 	// LC1950 https://leetcode.cn/problems/maximum-of-minimum-values-in-all-subarrays/（会员题）
 	{
-		ans := make([]int, n+1)
+		ans := make([]int, len(a)+1)
 		for i := range ans {
 			ans[i] = -2e9
 		}
@@ -244,13 +250,46 @@ func monotoneStack(a []int) ([]int, []int) {
 			sz := right[i] - left[i] - 1
 			ans[sz] = max(ans[sz], v)
 		}
-		for i := n - 1; i > 0; i-- {
+		for i := len(a) - 1; i > 0; i-- {
 			ans[i] = max(ans[i], ans[i+1])
 		}
 		// ans[1:]
 	}
 
 	return left, right
+}
+
+// 求右边第二个更大元素的下标（注意不是下一个更大元素的下一个更大元素）
+// 如果没有，那么结果为 n
+// 讲解 https://leetcode.cn/problems/next-greater-element-iv/solutions/1935877/by-endlesscheng-q6t5/
+// LC2454 https://leetcode.cn/problems/next-greater-element-iv/ 2175
+// https://atcoder.jp/contests/abc140/tasks/abc140_e
+// https://codeforces.com/problemset/problem/1736/C2 2400 用的是队列，但思路是一样的
+func next2Greater(a []int) ([]int, []int) {
+	n := len(a)
+	right := make([]int, n) // 下一个更大元素（可以省略）
+	for i := range right {
+		right[i] = n
+	}
+	right2 := make([]int, n)
+	for i := range right2 {
+		right2[i] = n
+	}
+	var s, t []int // 双单调栈
+	for i, x := range a {
+		for len(t) > 0 && a[t[len(t)-1]] < x {
+			right2[t[len(t)-1]] = i // t 栈顶的下下个更大元素是 a[i]
+			t = t[:len(t)-1]
+		}
+		j := len(s) - 1
+		for j >= 0 && a[s[j]] < x {
+			right[s[j]] = i // s 栈顶的下一个更大元素是 a[i]
+			j--
+		}
+		t = append(t, s[j+1:]...) // 把从 s 弹出的这一整段元素加到 t
+		s = append(s[:j+1], i)
+	}
+	return right, right2
 }
 
 // 注：若输入的是一个 1~n 的排列，求两侧大于/小于位置有更简单的写法
@@ -324,10 +363,10 @@ func maximalRectangleArea(mat [][]int) (ans int) {
 			}
 			st = append(st, pair{h, j})
 		}
+
 		right := make([]int, m)
 		st = []pair{{-1, m}}
-		for j := m - 1; j >= 0; j-- {
-			h := hs[j]
+		for j, h := range slices.Backward(hs) {
 			for {
 				if top := st[len(st)-1]; top.h < h {
 					right[j] = top.i
@@ -337,6 +376,7 @@ func maximalRectangleArea(mat [][]int) (ans int) {
 			}
 			st = append(st, pair{h, j})
 		}
+
 		for j, h := range hs {
 			if area := (right[j] - left[j] - 1) * h; area > ans {
 				ans = area

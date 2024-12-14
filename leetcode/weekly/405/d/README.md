@@ -24,7 +24,13 @@ $$
 
 细节：$\textit{words}$ 中可能有相同字符串，这些字符串对应的成本应当取最小的。
 
-> 注：该方法不保证 100% 正确，如果您发现了反例（哈希冲突），请在下方评论。
+### 写法一（单模哈希）
+
+根据**生日攻击**，设 $M$ 为模数，仅仅计算大约 $1.18\cdot \sqrt {M}$ 个不同字符串的哈希值，就有 $50\%$ 的概率会发生哈希碰撞，也就是有两个不同的字符串，哈希值是一样的。
+
+所以单模哈希通常来说无法保证其正确性，本题只要字符串的个数再大些，单模哈希就完全不行了。
+
+更安全也更通用的做法是后面的写法二（双模哈希）。
 
 ```py [sol-Python3]
 class Solution:
@@ -201,7 +207,7 @@ public:
                 h = (h * BASE + b) % MOD;
             }
             int m = words[i].length();
-            if (min_cost[m].find(h) == min_cost[m].end()) {
+            if (!min_cost[m].contains(h)) {
                 min_cost[m][h] = costs[i];
             } else {
                 min_cost[m][h] = min(min_cost[m][h], costs[i]);
@@ -241,7 +247,7 @@ func minimumCost(target string, words []string, costs []int) int {
 		powBase[i+1] = powBase[i] * base % mod
 		preHash[i+1] = (preHash[i]*base + int(b)) % mod // 秦九韶算法计算多项式哈希
 	}
-	// 计算子串 s[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
+	// 计算子串 target[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
 	// 计算方法类似前缀和
 	subHash := func(l, r int) int {
 		return ((preHash[r]-preHash[l]*powBase[r-l])%mod + mod) % mod
@@ -303,7 +309,7 @@ func minimumCost(target string, words []string, costs []int) int {
 		powBase[i+1] = powBase[i] * base % mod
 		preHash[i+1] = (preHash[i]*base + int(b)) % mod // 秦九韶算法计算多项式哈希
 	}
-	// 计算子串 s[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
+	// 计算子串 target[l:r] 的哈希值，注意这是左闭右开区间 [l,r)
 	// 计算方法类似前缀和
 	subHash := func(l, r int) int {
 		return ((preHash[r]-preHash[l]*powBase[r-l])%mod + mod) % mod
@@ -321,6 +327,257 @@ func minimumCost(target string, words []string, costs []int) int {
 		}
 		if minCost[m] == nil {
 			minCost[m] = map[int]int{}
+		}
+		if minCost[m][h] == 0 {
+			minCost[m][h] = costs[i]
+		} else {
+			minCost[m][h] = min(minCost[m][h], costs[i])
+		}
+	}
+
+	// 有 O(√L) 个不同的长度
+	sortedLens := make([]int, 0, len(lens))
+	for l := range lens {
+		sortedLens = append(sortedLens, l)
+	}
+	slices.Sort(sortedLens)
+
+	f := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		f[i] = math.MaxInt / 2
+		for _, sz := range sortedLens {
+			if sz > i {
+				break
+			}
+			if cost, ok := minCost[sz][subHash(i-sz, i)]; ok {
+				f[i] = min(f[i], f[i-sz]+cost)
+			}
+		}
+	}
+	if f[n] == math.MaxInt/2 {
+		return -1
+	}
+	return f[n]
+}
+```
+
+### 写法二（双模哈希）
+
+用两对 $\textit{mod}$ 和 $\textit{base}$ 计算哈希值，也就是每个字符串都有两个哈希值。
+
+设 $M_1$ 和 $M_2$ 为模数，此时要计算大约 $1.18\cdot \sqrt {M_1M_2}$ 个不同字符串的哈希，才有 $50\%$ 的概率会发生哈希碰撞。
+
+注：对于 Python 来说，把 $\textit{mod}$ 和 $\textit{base}$ 改大就行。这里提供一个大质数可以作为模数：$10^{18} + 3$。
+
+```py [sol-Python3]
+# 由于乘法超过 64 位整数范围，需要用到 bigint，所以效率不如写法一
+class Solution:
+    def minimumCost(self, target: str, words: List[str], costs: List[int]) -> int:
+        n = len(target)
+
+        # 多项式字符串哈希（方便计算子串哈希值）
+        # 哈希函数 hash(s) = s[0] * BASE^(n-1) + s[1] * BASE^(n-2) + ... + s[n-2] * BASE + s[n-1]
+        MOD = 10 ** 18 + 3
+        BASE = randint(8 * 10 ** 17, 9 * 10 ** 17)  # 随机 BASE，防止 hack
+        pow_base = [1] + [0] * n  # pow_base[i] = BASE^i
+        pre_hash = [0] * (n + 1)  # 前缀哈希值 pre_hash[i] = hash(s[:i])
+        for i, b in enumerate(target):
+            pow_base[i + 1] = pow_base[i] * BASE % MOD
+            pre_hash[i + 1] = (pre_hash[i] * BASE + ord(b)) % MOD  # 秦九韶算法计算多项式哈希
+
+        # 每个 words[i] 的哈希值 -> 最小成本
+        min_cost = defaultdict(lambda: inf)
+        for w, c in zip(words, costs):
+            h = 0
+            for b in w:
+                h = (h * BASE + ord(b)) % MOD
+            min_cost[h] = min(min_cost[h], c)
+
+        # 有 O(√L) 个不同的长度
+        sorted_lens = sorted(set(map(len, words)))
+
+        f = [0] + [inf] * n
+        for i in range(1, n + 1):
+            for sz in sorted_lens:
+                if sz > i:
+                    break
+                # 计算子串 target[i-sz:i] 的哈希值（计算方法类似前缀和）
+                sub_hash = (pre_hash[i] - pre_hash[i - sz] * pow_base[sz]) % MOD
+                # 手写 min，避免超时
+                tmp = f[i - sz] + min_cost[sub_hash]
+                if tmp < f[i]:
+                    f[i] = tmp
+        return -1 if f[n] == inf else f[n]
+```
+
+```java [sol-Java]
+// 基于上面的「更快写法」
+class Solution {
+    public int minimumCost(String target, String[] words, int[] costs) {
+        char[] t = target.toCharArray();
+        int n = t.length;
+        final int MOD1 = 1_070_777_777;
+        final int MOD2 = 1_000_000_007;
+        final int BASE1 = (int) 8e8 + new Random().nextInt((int) 1e8);
+        final int BASE2 = (int) 8e8 + new Random().nextInt((int) 1e8);
+        int[] powBase1 = new int[n + 1];
+        int[] powBase2 = new int[n + 1];
+        int[] preHash1 = new int[n + 1];
+        int[] preHash2 = new int[n + 1];
+        powBase1[0] = powBase2[0] = 1;
+        for (int i = 0; i < n; i++) {
+            powBase1[i + 1] = (int) ((long) powBase1[i] * BASE1 % MOD1);
+            powBase2[i + 1] = (int) ((long) powBase2[i] * BASE2 % MOD2);
+            preHash1[i + 1] = (int) (((long) preHash1[i] * BASE1 + t[i]) % MOD1);
+            preHash2[i + 1] = (int) (((long) preHash2[i] * BASE2 + t[i]) % MOD2);
+        }
+
+        Map<Long, Integer> minCost = new HashMap<>(); // 哈希值 -> 最小成本
+        for (int i = 0; i < words.length; i++) {
+            long h1 = 0;
+            long h2 = 0;
+            for (char b : words[i].toCharArray()) {
+                h1 = (h1 * BASE1 + b) % MOD1;
+                h2 = (h2 * BASE2 + b) % MOD2;
+            }
+            minCost.merge(h1 << 32 | h2, costs[i], Integer::min);
+        }
+
+        // 有 O(√L) 个不同的长度
+        Set<Integer> lengthSet = new HashSet<>();
+        for (String w : words) {
+            lengthSet.add(w.length());
+        }
+        int[] sortedLens = new int[lengthSet.size()];
+        int k = 0;
+        for (int len : lengthSet) {
+            sortedLens[k++] = len;
+        }
+        Arrays.sort(sortedLens);
+
+        int[] f = new int[n + 1];
+        Arrays.fill(f, Integer.MAX_VALUE / 2);
+        f[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (int len : sortedLens) {
+                if (len > i) {
+                    break;
+                }
+                // 计算子串 target[i-sz] 到 target[i-1] 的哈希值（计算方法类似前缀和）
+                long subHash1 = ((preHash1[i] - (long) preHash1[i - len] * powBase1[len]) % MOD1 + MOD1) % MOD1;
+                long subHash2 = ((preHash2[i] - (long) preHash2[i - len] * powBase2[len]) % MOD2 + MOD2) % MOD2;
+                long subHash = subHash1 << 32 | subHash2;
+                f[i] = Math.min(f[i], f[i - len] + minCost.getOrDefault(subHash, Integer.MAX_VALUE / 2));
+            }
+        }
+        return f[n] == Integer.MAX_VALUE / 2 ? -1 : f[n];
+    }
+}
+```
+
+```cpp [sol-C++]
+class Solution {
+public:
+    int minimumCost(string target, vector<string>& words, vector<int>& costs) {
+        int n = target.length();
+        const int MOD1 = 1'070'777'777;
+        const int MOD2 = 1'000'000'007;
+        mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+        const int BASE1 = uniform_int_distribution<>(8e8, 9e8)(rng);
+        const int BASE2 = uniform_int_distribution<>(8e8, 9e8)(rng);
+        vector<int> pow_base1(n + 1), pow_base2(n + 1);
+        vector<int> pre_hash1(n + 1), pre_hash2(n + 1);
+        pow_base1[0] = pow_base2[0] = 1;
+        for (int i = 0; i < n; i++) {
+            pow_base1[i + 1] = (long long) pow_base1[i] * BASE1 % MOD1;
+            pow_base2[i + 1] = (long long) pow_base2[i] * BASE2 % MOD2;
+            pre_hash1[i + 1] = ((long long) pre_hash1[i] * BASE1 + target[i]) % MOD1;
+            pre_hash2[i + 1] = ((long long) pre_hash2[i] * BASE2 + target[i]) % MOD2;
+        }
+
+        // 计算 target[l] 到 target[r-1] 的哈希值
+        auto sub_hash = [&](int l, int r) {
+            long long h1 = ((pre_hash1[r] - (long long) pre_hash1[l] * pow_base1[r - l]) % MOD1 + MOD1) % MOD1;
+            long long h2 = ((pre_hash2[r] - (long long) pre_hash2[l] * pow_base2[r - l]) % MOD2 + MOD2) % MOD2;
+            return h1 << 32 | h2;
+        };
+
+        map<int, unordered_map<long long, int>> min_cost; // 长度 -> 哈希值 -> 最小成本
+        for (int i = 0; i < words.size(); i++) {
+            long long h1 = 0, h2 = 0;
+            for (char b : words[i]) {
+                h1 = (h1 * BASE1 + b) % MOD1;
+                h2 = (h2 * BASE2 + b) % MOD2;
+            }
+            long long h = h1 << 32 | h2;
+            int m = words[i].length();
+            if (!min_cost[m].contains(h)) {
+                min_cost[m][h] = costs[i];
+            } else {
+                min_cost[m][h] = min(min_cost[m][h], costs[i]);
+            }
+        }
+
+        vector<int> f(n + 1, INT_MAX / 2);
+        f[0] = 0;
+        for (int i = 1; i <= n; i++) {
+            for (auto& [len, mc] : min_cost) {
+                if (len > i) {
+                    break;
+                }
+                auto it = mc.find(sub_hash(i - len, i));
+                if (it != mc.end()) {
+                    f[i] = min(f[i], f[i - len] + it->second);
+                }
+            }
+        }
+        return f[n] == INT_MAX / 2 ? -1 : f[n];
+    }
+};
+```
+
+```go [sol-Go]
+// 基于上面的「更快写法」
+func minimumCost(target string, words []string, costs []int) int {
+	n := len(target)
+	const mod1 = 1_070_777_777
+	const mod2 = 1_000_000_007
+	base1 := 9e8 - rand.Intn(1e8)
+	base2 := 9e8 - rand.Intn(1e8)
+
+	type hPair struct{ h1, h2 int }
+	powBase := make([]hPair, n+1)
+	preHash := make([]hPair, n+1)
+	powBase[0] = hPair{1, 1}
+	for i, b := range target {
+		powBase[i+1] = hPair{powBase[i].h1 * base1 % mod1, powBase[i].h2 * base2 % mod2}
+		preHash[i+1] = hPair{(preHash[i].h1*base1 + int(b)) % mod1, (preHash[i].h2*base2 + int(b)) % mod2}
+	}
+
+	// 计算子串 target[l:r] 的哈希值
+	// 空串的哈希值为 0
+	subHash := func(l, r int) hPair {
+		h1 := ((preHash[r].h1-preHash[l].h1*powBase[r-l].h1)%mod1 + mod1) % mod1
+		h2 := ((preHash[r].h2-preHash[l].h2*powBase[r-l].h2)%mod2 + mod2) % mod2
+		return hPair{h1, h2}
+	}
+
+	calcHash := func(t string) (p hPair) {
+		for _, b := range t {
+			p.h1 = (p.h1*base1 + int(b)) % mod1
+			p.h2 = (p.h2*base2 + int(b)) % mod2
+		}
+		return
+	}
+
+	minCost := make([]map[hPair]int, n+1) // [words[i] 的长度][words[i] 的哈希值] -> 最小成本
+	lens := map[int]struct{}{} // 所有 words[i] 的长度集合
+	for i, w := range words {
+		m := len(w)
+		lens[m] = struct{}{}
+		h := calcHash(w)
+		if minCost[m] == nil {
+			minCost[m] = map[hPair]int{}
 		}
 		if minCost[m][h] == 0 {
 			minCost[m][h] = costs[i]
@@ -564,7 +821,7 @@ class AhoCorasick {
     }
 }
 
-public class Solution {
+class Solution {
     public int minimumCost(String target, String[] words, int[] costs) {
         AhoCorasick ac = new AhoCorasick();
         for (int i = 0; i < words.length; i++) {
@@ -659,7 +916,7 @@ public:
         }
         ac.build_fail();
 
-        int n = target.size();
+        int n = target.length();
         vector<int> f(n + 1, INT_MAX / 2);
         f[0] = 0;
         auto cur = ac.root;
@@ -771,14 +1028,18 @@ func minimumCost(target string, words []string, costs []int) int {
 
 #### 复杂度分析
 
-- 时间复杂度：$\mathcal{O}(L + n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和。有多少个匹配，就有多少次状态转移。
-- 空间复杂度：$\mathcal{O}(L|\Sigma| + n)$。其中 $|\Sigma|$ 是字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。
+- 时间复杂度：$\mathcal{O}(L|\Sigma| + n\sqrt{L})$，其中 $n$ 是 $\textit{target}$ 的长度，$L$ 是 $\textit{words}$ 中所有字符串的长度之和，$|\Sigma|$ 是字符集合的大小，本题字符均为小写字母，所以 $|\Sigma|=26$。有多少个匹配，就有多少次状态转移。
+- 空间复杂度：$\mathcal{O}(L|\Sigma| + n)$。
+
+## 相似题目
+
+- [3292. 形成目标字符串需要的最少字符串数 II](https://leetcode.cn/problems/minimum-number-of-valid-strings-to-form-target-ii/)
 
 ## 分类题单
 
 [如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -787,6 +1048,9 @@ func minimumCost(target string, words []string, costs []int) int {
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

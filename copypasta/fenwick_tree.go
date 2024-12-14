@@ -1,7 +1,9 @@
 package copypasta
 
 import (
+	"maps"
 	"math"
+	"slices"
 	"sort"
 )
 
@@ -35,13 +37,13 @@ https://atcoder.jp/contests/arc075/tasks/arc075_c
 静态区间种类 - 离线做法
     https://www.luogu.com.cn/problem/P1972
     https://atcoder.jp/contests/abc174/tasks/abc174_f
-    https://codeforces.com/problemset/problem/246/E 2400
+    https://codeforces.com/problemset/problem/246/E
 置换 LC2179 https://leetcode.cn/problems/count-good-triplets-in-an-array/
 - 同样的置换思想 LC1713 https://leetcode.cn/problems/minimum-operations-to-make-a-subsequence/
 题目推荐 https://cp-algorithms.com/data_structures/fenwick.html#toc-tgt-12
 树状数组的性质能使其支持动态 [1,x] 或 [x,n] 范围上的最值更新查询等操作
-    https://codeforces.com/problemset/problem/629/D 2000
-    https://codeforces.com/problemset/problem/1635/F 2800
+    https://codeforces.com/problemset/problem/629/D
+    https://codeforces.com/problemset/problem/1635/F
 好题 https://www.luogu.com.cn/problem/P2345 https://www.luogu.com.cn/problem/P5094
 多变量统计 https://codeforces.com/problemset/problem/1194/E
          T4 https://www.nowcoder.com/discuss/1022136
@@ -50,18 +52,27 @@ https://atcoder.jp/contests/arc075/tasks/arc075_c
 LC2921 https://leetcode.cn/problems/maximum-profitable-triplets-with-increasing-prices-ii/
 
 https://codeforces.com/problemset/problem/1915/F 1500
+https://codeforces.com/problemset/problem/1234/D 1600
+https://codeforces.com/problemset/problem/627/B 1700 模板题
 https://codeforces.com/problemset/problem/652/D 1800 区间包含计数
 https://codeforces.com/problemset/problem/597/C 1900 长为 k 的上升子序列个数
 https://codeforces.com/problemset/problem/961/E 1900（不止一种做法）
+https://codeforces.com/problemset/problem/629/D 2000
+https://codeforces.com/problemset/problem/1891/F 2000 离线 树 回溯
 https://codeforces.com/problemset/problem/703/D 2100 区间元素去重后的异或和
 - 联系 https://www.luogu.com.cn/problem/P1972
 https://codeforces.com/problemset/problem/1660/F2 2100 建模
 https://codeforces.com/problemset/problem/301/D 2200 整除对统计
 https://codeforces.com/problemset/problem/369/E 2200 区间统计技巧
+https://codeforces.com/problemset/problem/762/E 2200 离散化
+- https://codeforces.com/problemset/problem/1045/G 2200 同 762E
+https://codeforces.com/problemset/problem/1194/E 2200 多变量统计
 https://codeforces.com/problemset/problem/1167/F 2300
 https://codeforces.com/problemset/problem/1967/C 2300
 https://codeforces.com/problemset/problem/12/D 2400 三维偏序
+https://codeforces.com/problemset/problem/246/E 2400
 https://codeforces.com/problemset/problem/1334/F 2500
+https://codeforces.com/problemset/problem/1635/F 2800
 
 https://atcoder.jp/contests/abc256/tasks/abc256_f 多重前缀和
 https://www.lanqiao.cn/problems/5131/learning/?contest_id=144
@@ -115,30 +126,57 @@ func (f fenwick) query(l, r int) int {
 	return f.pre(r) - f.pre(l-1)
 }
 
-// 离线二维数点
-// 对于每个询问，回答：a[l:r+1] 中有多少个值在 [lower, upper] 中的数
-// 转换成：a[:r+1] 中的值在 [lower, upper] 中的数，减去 a[:l] 中的值在 [lower, upper] 中的数
-// 一边遍历 a，一边更新【值域树状数组】，一边回答离线后的询问
-// 所有下标均从 0 开始
+// 静态二维数点
+// 对于每个询问，计算 [x1,x2] x [y1,y2] 中的点的个数
+// 离线，拆分成两个更小的询问：[1,x2] x [y1,y2] 中的点的个数，减去 [1,x1-1] x [y1,y2] 中的点的个数
+// 一边从小到大枚举 x，一边更新【值域树状数组】，一边回答离线后的询问
+// https://www.luogu.com.cn/problem/P2163
+// LC3382 https://leetcode.cn/problems/maximum-area-rectangle-with-point-constraints-ii/
 // https://codeforces.com/problemset/problem/1899/G 1900
-func areaPointCountOffline(a []int, queries []struct{ l, r, lower, upper int }) []int {
-	// 注：如果值域大，可以先把 a[i] 离散化，lower 和 upper 二分转换一下
-	type data struct{ lower, upper, sign, qid int }
-	qs := make([][]data, len(a))
-	for i, q := range queries {
-		l, r, lower, upper := q.l, q.r, q.lower, q.upper
-		if l > 0 {
-			qs[l-1] = append(qs[l-1], data{lower, upper, -1, i})
-		}
-		qs[r] = append(qs[r], data{lower, upper, 1, i})
+func areaPointCountOffline(points []struct{ x, y int }, queries []struct{ x1, x2, y1, y2 int }) []int {
+	xMap := map[int][]int{} // 同一列的所有点的纵坐标
+	yMap := map[int][]int{} // 同一行的所有点的横坐标（没有用到，可以简单改成 []int，下面排序去重得到 ys）
+	for _, p := range points {
+		x, y := p.x, p.y
+		xMap[x] = append(xMap[x], y)
+		yMap[y] = append(yMap[y], x)
 	}
 
+	// 离散化用
+	xs := slices.Sorted(maps.Keys(xMap))
+	ys := slices.Sorted(maps.Keys(yMap))
+
+	// 离线询问
+	type data struct{ qid, sign, y1, y2 int }
+	qs := make([][]data, len(xs))
+	for i, q := range queries {
+		x1 := sort.SearchInts(xs, q.x1) // 离散化，下标从 0 开始
+		x2 := sort.SearchInts(xs, q.x2+1) - 1
+		if x1 > x2 {
+			continue
+		}
+		y1 := sort.SearchInts(ys, q.y1)
+		y2 := sort.SearchInts(ys, q.y2+1) - 1
+		if y1 > y2 {
+			continue
+		}
+		if x1 > 0 {
+			qs[x1-1] = append(qs[x1-1], data{i, -1, y1, y2})
+		}
+		qs[x2] = append(qs[x2], data{i, 1, y1, y2})
+	}
+
+	// 回答询问
 	ans := make([]int, len(queries))
-	t := newFenwickTree(len(a)) // 值域树状数组
-	for i, v := range a {
-		t.update(v, 1)
-		for _, p := range qs[i] {
-			ans[p.qid] += p.sign * t.query(p.lower, p.upper)
+	t := make(fenwick, len(ys)+1)
+	for i, x := range xs { // 从小到大枚举 x
+		// 把横坐标为 x 的所有点都加到树状数组中
+		for _, y := range xMap[x] {
+			t.update(sort.SearchInts(ys, y)+1, 1) // 离散化，并且下标从 1 开始
+		}
+		for _, q := range qs[i] {
+			// 查询横坐标 <= x（已满足）且纵坐标在 [y1,y2] 中的点的个数
+			ans[q.qid] += q.sign * t.query(q.y1+1, q.y2+1) // 下标从 1 开始
 		}
 	}
 	return ans
@@ -347,7 +385,7 @@ func (f fenwickWithSeg) next(l, r, v int) int {
 //
 
 func _(n int) {
-	tree := make([]int, n+1) // int
+	tree := make([]int, n+1)
 	add := func(i, val int) {
 		for ; i < len(tree); i += i & -i {
 			tree[i] += val

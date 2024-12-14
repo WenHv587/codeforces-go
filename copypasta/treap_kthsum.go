@@ -2,14 +2,8 @@ package copypasta
 
 import "time"
 
-/* 维护前 k 小元素和的 treap
-支持添加删除元素
+// 已废弃！请移步新版本泛型代码 ./treap/prefixsum/prefixsum.go
 
-https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/
-https://atcoder.jp/contests/abc306/tasks/abc306_e
-https://atcoder.jp/contests/abc287/tasks/abc287_g
-
-*/
 type nodeSum struct {
 	lr       [2]*nodeSum
 	priority uint
@@ -91,7 +85,32 @@ func (t *treapSum) _put(o *nodeSum, key, num int) *nodeSum {
 // num=-1 表示移除一个 key
 func (t *treapSum) put(key, num int) { t.root = t._put(t.root, key, num) }
 
+func newTreapSum() *treapSum {
+	return &treapSum{rd: uint(time.Now().UnixNano())/2 + 1}
+}
+
+// <= size 的元素个数，元素和
+// LC3245 https://leetcode.cn/problems/alternating-groups-iii/
+func (t *treapSum) cntSum(size int) (cnt, sum int) {
+	for o := t.root; o != nil; {
+		c := o.cmp(size)
+		if c == 0 { // size 小，去左子树找
+			o = o.lr[0]
+			continue
+		}
+		// 左子树 + 自己
+		cnt += o.lr[0].getSize() + o.keyCnt
+		sum += o.lr[0].getSum() + o.keySum
+		if c < 0 { // 相等
+			return
+		}
+		o = o.lr[1]
+	}
+	return
+}
+
 // 返回前 k 小数的和（k 从 1 开始）
+// https://www.codechef.com/problems/OKLAMA
 func (t *treapSum) kth(k int) (sum int) {
 	if k > t.root.getSize() {
 		panic(-1)
@@ -114,6 +133,23 @@ func (t *treapSum) kth(k int) (sum int) {
 	return
 }
 
-func newTreapSum() *treapSum { 
-	return &treapSum{rd: uint(time.Now().UnixNano())/2 + 1} 
+// 从大到小，计算凑出 need 至少需要多少个数
+// cmp 需要改成 >
+// 来自 https://codeforces.com/contest/1978/problem/D 的麻烦写法
+func (t *treapSum) rank(need int) (cnt int) {
+	for o := t.root; o != nil; {
+		if o.lr[0].getSum() >= need {
+			o = o.lr[0]
+		} else {
+			need -= o.lr[0].getSum()
+			cnt += o.lr[0].getSize()
+			if o.keyCnt*o.key >= need {
+				cnt += (need + o.key - 1) / o.key
+				return
+			}
+			need -= o.keyCnt * o.key
+			o = o.lr[1]
+		}
+	}
+	panic(-1)
 }

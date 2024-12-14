@@ -2,25 +2,35 @@
 
 ## 一、寻找子问题
 
-看示例 1，要求构造逆序对为 $2$ 的排列。
+看示例 1，我们需要构造长为 $n=3$ 且逆序对为 $2$ 的排列。
 
 讨论最后一个数填什么：
 
-- 填 $2$，那么前面不会有比 $2$ 大的数，这意味着剩下的 $n-1=2$ 个数的逆序对等于 $2-0=2$。
-- 填 $1$，那么前面一定有 $1$ 个比 $1$ 大的数，这意味着剩下的 $n-1=2$ 个数的逆序对等于 $2-1=1$。
-- 填 $0$，那么前面一定有 $2$ 个比 $0$ 大的数，这意味着剩下的 $n-1=2$ 个数的逆序对等于 $2-2=0$。
+- 填 $2$，那么左边不会有比 $2$ 大的数，这意味着剩下的 $n-1=2$ 个数的逆序对需要等于 $2-0=2$。（这是不存在的）
+- 填 $1$，那么左边一定有 $1$ 个比 $1$ 大的数，这意味着剩下的 $n-1=2$ 个数的逆序对需要等于 $2-1=1$。（这只有 $1$ 种构造方式，即 $[2,0]$）
+- 填 $0$，那么左边一定有 $2$ 个比 $0$ 大的数，这意味着剩下的 $n-1=2$ 个数的逆序对需要等于 $2-2=0$。（这只有 $1$ 种构造方式，即 $[1,2]$）
 
 这些问题都是**和原问题相似的、规模更小的子问题**，可以用**递归**解决。
+
+递归过程中，是否会有重复的子问题？在什么情况下，会出现重复的子问题？
+
+比如 $n=4$（构造 $0,1,2,3$ 的排列），要求有 $4$ 个逆序对。考虑其中两种情况：
+
+- 最右边的两个数是 $3,0$，它俩有 $1$ 个逆序对，再算上左边的 $1,2$ 和 $0$ 组成了 $2$ 个逆序对，一共组成了 $3$ 个逆序对。接下来要解决的子问题是：剩余 $2$ 个数，构造逆序对为 $4-3=1$ 的方案数。⚠**注意**：我们已经把左边尚未填入的 $1,2$ 和已填入的 $0$ 的逆序对去掉了（提前计算 $1,2$ 和 $0$ 的逆序对），所以**在解决子问题时，无需考虑当前填入的数字与右边已填入的数字的逆序对**。
+- 最右边的两个数是 $2,1$，它俩有 $1$ 个逆序对，再算上左边的 $3$ 和 $2,1$ 组成了 $2$ 个逆序对，一共组成了 $3$ 个逆序对。接下来要解决的子问题是：剩余 $2$ 个数，构造逆序对为 $4-3=1$ 的方案数。⚠**注意**：我们已经把左边尚未填入的 $3$ 和已填入的 $2,1$ 的逆序对去掉了（提前计算 $3$ 和 $2,1$ 的逆序对），所以**在解决子问题时，无需考虑当前填入的数字与右边已填入的数字的逆序对**。
+
+既然不考虑右边的数字，那么剩下的数字是 $1,2$ 还是 $0,3$ 其实是**等价**的！都等同于还剩下两个数，把小的数放左边，大的数放右边，就是 $0$ 个逆序对；把大的数放左边，小的数放右边，就是 $1$ 个逆序对。所以，在解决子问题时，无需知道具体还剩下哪些数，**只需要知道剩余数字的个数，以及剩余逆序对的个数**。用这两个个数去定义状态，就会产生重复的子问题，就可以用记忆化搜索解决。
 
 > 注：动态规划有「选或不选」和「枚举选哪个」两种基本思考方式。在做题时，可根据题目要求，选择适合题目的一种来思考。本题用到的是「枚举选哪个」。
 
 ## 二、状态定义与状态转移方程
 
-因为要解决的问题都形如「前 $i$ 个数的逆序对为 $j$ 时的排列个数」，所以用它作为本题的状态定义 $\textit{dfs}(i,j)$。
+根据上面的讨论，定义 $\textit{dfs}(i,j)$ 表示 $\textit{perm}[0]$ 到 $\textit{perm}[i]$（剩余 $i+1$ 个数）逆序对为 $j$ 的排列个数。
 
-直接考虑第 $i$ 个数 $\textit{perm}[i]$ 和前面 $\textit{perm}[0]$ 到 $\textit{perm}[i-1]$ 可以组成的逆序对的个数：
+设 $\textit{perm}[i]$ 和左边 $\textit{perm}[0]$ 到 $\textit{perm}[i-1]$ 组成了 $k$ 个逆序对：
 
-- 前面有 $k$ 个数比 $\textit{perm}[i]$ 大，组成了 $k$ 个逆序对，那么问题变成前 $i-1$ 个数的逆序对为 $j-k$ 时的排列个数，即 $\textit{dfs}(i-1,j-k)$。
+- 枚举 $k=0,1,2,\cdots,\min(i,j)$。其中 $\min(i,j)$ 是因为左边只有 $i$ 个数，至多和 $\textit{perm}[i]$ 组成 $i$ 个逆序对。
+- 组成了 $k$ 个逆序对（也就是左边有 $k$ 个数比 $\textit{perm}[i]$ 大），还剩下 $j-k$ 个逆序对，问题变成 $\textit{perm}[0]$ 到 $\textit{perm}[i-1]$ 的逆序对为 $j-k$ 的排列个数，即 $\textit{dfs}(i-1,j-k)$。
 
 累加得
 
@@ -28,20 +38,19 @@ $$
 \textit{dfs}(i,j) = \sum_{k=0}^{\min(i,j)}\textit{dfs}(i-1,j-k)
 $$
 
-其中 $\min(i,j)$ 是因为前面只有 $i$ 个数，至多和 $\textit{perm}[i]$ 组成 $i$ 个逆序对。
+⚠**注意**：我们**不需要知道每个位置具体填了什么数**。无论右边填了什么数，只要 $\textit{perm}[i]$ 填的是剩余元素的**最大值**，那么 $k$ 就是 $0$；只要 $\textit{perm}[i]$ 填的是剩余元素的**次大值**，那么 $k$ 就是 $1$；依此类推。
 
-⚠**注意**：我们**不需要知道每个位置具体填了什么数**。无论之前填了什么数，只要 $\textit{perm}[i]$ 填的是剩余元素的**最大值**，那么 $k$ 就是 $0$；只要 $\textit{perm}[i]$ 填的是剩余元素的**次大值**，那么 $k$ 就是 $1$；依此类推。
+除此以外，设 $\textit{req}[i]$ 是 $\textit{perm}[0]$ 到 $\textit{perm}[i]$ 的逆序对个数（没有要求就是 $-1$），如果 $\textit{req}[i-1]\ge 0$，则无需枚举 $k$，分类讨论：
 
-除此以外，设 $\textit{req}[i]$ 是前 $i$ 个数的逆序对个数（没有要求就是 $-1$），如果 $\textit{req}[i-1]\ge 0$，则无需枚举 $k$，分类讨论：
-
-- 如果 $j<\textit{req}[i-1]$ 或者 $j-i>\textit{req}[i-1]$，则无法满足，$\textit{dfs}(i,j) = 0$。
-- 否则 $\textit{dfs}(i,j) = \textit{dfs}(i-1,\textit{req}[i-1])$。
+- 如果 $j<\textit{req}[i-1]$，由于 $j$ 只能变小不能变大，无法满足要求，所以 $\textit{dfs}(i,j) = 0$。
+- 如果 $j-i>\textit{req}[i-1]$，即使当前填了最小的数，和左边 $i$ 个数组成了 $i$ 个逆序对，那么剩余的 $j-i$ 还是太大了，无法满足要求，所以 $\textit{dfs}(i,j) = 0$。
+- 否则令上文中的 $k=j-\textit{req}[i-1]$，就可以把逆序对从 $j$ 减小到 $\textit{req}[i-1]$，从而满足要求。由于只有令 $k=j-\textit{req}[i-1]$ 一种方法，所以 $\textit{dfs}(i,j) = \textit{dfs}(i-1,j-k) = \textit{dfs}(i-1,\textit{req}[i-1])$。
 
 **递归边界**：$\textit{dfs}(0,0)=1$，此时找到了一个符合要求的排列。
 
 **递归入口**：$\textit{dfs}(n-1,\textit{req}[n-1])$，也就是答案。
 
-根据题意，$\textit{req}[0]$ 一定为 $0$。代码实现时，可以在递归之前判断 $\textit{req}[0] > 0$ 的情况，如果满足则直接返回 $0$。
+根据题意，$\textit{req}[0]$ 一定为 $0$。代码实现时，可以在递归之前判断 $\textit{req}[0] > 0$ 的情况，如果成立则无解，直接返回 $0$。
 
 ## 三、递归搜索 + 保存递归返回值 = 记忆化搜索
 
@@ -79,7 +88,7 @@ class Solution:
 ```
 
 ```java [sol-Java]
-public class Solution {
+class Solution {
     public int numberOfPermutations(int n, int[][] requirements) {
         int[] req = new int[n];
         Arrays.fill(req, -1);
@@ -220,7 +229,7 @@ func numberOfPermutations(n int, requirements [][]int) int {
 
 我们可以去掉递归中的「递」，只保留「归」的部分，即自底向上计算。
 
-具体来说，$f[i][j]$ 的定义和 $\textit{dfs}(i,j)$ 的定义是一样的，都表示前 $i$ 个数的逆序对为 $j$ 时的排列个数。
+具体来说，$f[i][j]$ 的定义和 $\textit{dfs}(i,j)$ 的定义是一样的，都表示 $\textit{perm}[0]$ 到 $\textit{perm}[i]$ 的逆序对为 $j$ 的排列个数。
 
 如果 $\textit{req}[i-1]<0$，相应的递推式（状态转移方程）也和 $\textit{dfs}$ 一样：
 
@@ -269,7 +278,7 @@ class Solution:
 ```
 
 ```java [sol-Java]
-public class Solution {
+class Solution {
     public int numberOfPermutations(int n, int[][] requirements) {
         final int MOD = 1_000_000_007;
         int[] req = new int[n];
@@ -406,7 +415,7 @@ $$
 
 因此可以去掉第一个维度，反复利用同一个长为 $m+1$ 的一维数组。
 
-代码实现时，前缀和可以直接保存在 $f$ 中。
+代码实现时，前缀和可以直接保存在 $f$ 中。先计算前缀和，再利用前缀和计算和式（子数组和）。
 
 关于取模的技巧，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
@@ -431,15 +440,15 @@ class Solution:
                 for j in range(m + 1):
                     f[j] = f[r] if r <= j <= min(i + r, mx) else 0
             else:
-                for j in range(1, mx + 1):
+                for j in range(1, mx + 1):  # 计算前缀和
                     f[j] = (f[j] + f[j - 1]) % MOD
-                for j in range(mx, i, -1):
+                for j in range(mx, i, -1):  # 计算子数组和
                     f[j] = (f[j] - f[j - i - 1]) % MOD
         return f[req[-1]]
 ```
 
 ```java [sol-Java]
-public class Solution {
+class Solution {
     public int numberOfPermutations(int n, int[][] requirements) {
         final int MOD = 1_000_000_007;
         int[] req = new int[n];
@@ -464,10 +473,10 @@ public class Solution {
                 Arrays.fill(f, r + 1, Math.min(i + r, mx) + 1, f[r]);
                 Arrays.fill(f, Math.min(i + r, mx) + 1, m + 1, 0);
             } else {
-                for (int j = 1; j <= mx; j++) {
+                for (int j = 1; j <= mx; j++) { // 计算前缀和
                     f[j] = (f[j] + f[j - 1]) % MOD;
                 }
-                for (int j = mx; j > i; j--) {
+                for (int j = mx; j > i; j--) { // 计算子数组和
                     f[j] = (f[j] - f[j - i - 1] + MOD) % MOD;
                 }
             }
@@ -492,7 +501,7 @@ public:
         }
 
         int m = ranges::max(req);
-        vector<int> f(m + 1), sum(m + 2);
+        vector<int> f(m + 1);
         f[0] = 1;
         for (int i = 1; i < n; i++) {
             int mx = req[i] < 0 ? m : req[i];
@@ -501,10 +510,10 @@ public:
                 fill(f.begin() + r + 1, f.begin() + min(i + r, mx) + 1, f[r]);
                 fill(f.begin() + min(i + r, mx) + 1, f.end(), 0);
             } else {
-                for (int j = 1; j <= mx; j++) {
+                for (int j = 1; j <= mx; j++) { // 计算前缀和
                     f[j] = (f[j] + f[j - 1]) % MOD;
                 }
-                for (int j = mx; j > i; j--) {
+                for (int j = mx; j > i; j--) { // 计算子数组和
                     f[j] = (f[j] - f[j - i - 1] + MOD) % MOD;
                 }
             }
@@ -543,10 +552,10 @@ func numberOfPermutations(n int, requirements [][]int) int {
 			}
 			clear(f[min(i+r, mx)+1:])
 		} else {
-			for j := 1; j <= mx; j++ {
+			for j := 1; j <= mx; j++ { // 计算前缀和
 				f[j] = (f[j] + f[j-1]) % mod
 			}
-			for j := mx; j > i; j-- {
+			for j := mx; j > i; j-- { // 计算子数组和
 				f[j] = (f[j] - f[j-i-1] + mod) % mod
 			}
 		}
@@ -566,18 +575,21 @@ func numberOfPermutations(n int, requirements [][]int) int {
 
 ## 分类题单
 
-以下题单没有特定的顺序，可以按照个人喜好刷题。
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-
-欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

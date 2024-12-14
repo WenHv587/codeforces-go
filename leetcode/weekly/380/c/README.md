@@ -12,13 +12,13 @@
 
 最后还剩一个问题：二分的上界取多少合适？
 
-$1$ 到 $\textit{num}$ 中的数字 $v$，除以 $2^{x-1}$ 后如果是奇数，就说明 $v$ 至少包含一个我们需要的 $1$。而 $1$ 到 $\textit{num}$ 中有 $\left\lfloor\dfrac{\textit{num}+1}{2}\right\rfloor$ 个奇数，所以取 $\textit{num}$ 为
+在 $1$ 到 $\textit{num}$ 中的数字 $v$，如果 $v$ 除以 $2^{x-1}$ 后如果是奇数（$v$ 右移 $x-1$ 位后最低位是 $1$），就说明 $v$ 至少包含一个我们需要的 $1$。又由于每两个连续数字中有一个是奇数，所以每连续 $2^x$ 个数中，必然有一个数至少包含一个我们需要的 $1$。所以，如果要保证价值和至少是 $k+1$，可以取 $\textit{num}$ 为
 
 $$
 (k+1) \cdot 2^x
 $$
 
-可以保证价值和至少是 $k+1$，一定不满足二分判定。
+此时一定不满足二分判定，适合作为上界。
 
 代码中用到的位运算技巧见 [从集合论到位运算，常见位运算技巧分类总结！](https://leetcode.cn/circle/discuss/CaOJ45/)
 
@@ -75,14 +75,20 @@ class Solution {
     }
 
     private long dfs(int i, int cnt1, boolean isLimit) {
-        if (i < 0) return cnt1;
-        if (!isLimit && memo[i][cnt1] != -1) return memo[i][cnt1];
+        if (i < 0) {
+            return cnt1;
+        }
+        if (!isLimit && memo[i][cnt1] != -1) {
+            return memo[i][cnt1];
+        }
         int up = isLimit ? (int) (num >> i & 1) : 1;
         long res = 0;
         for (int d = 0; d <= up; d++) { // 枚举要填入的数字 d
             res += dfs(i - 1, cnt1 + (d == 1 && (i + 1) % x == 0 ? 1 : 0), isLimit && d == up);
         }
-        if (!isLimit) memo[i][cnt1] = res;
+        if (!isLimit) {
+            memo[i][cnt1] = res;
+        }
         return res;
     }
 }
@@ -93,19 +99,26 @@ class Solution {
 public:
     long long findMaximumNumber(long long k, int x) {
         auto check = [&](long long num) {
-            int m = 64 - __builtin_clzll(num);
+            int m = __lg(num) + 1;
             vector<vector<long long>> memo(m, vector<long long>(m + 1, -1));
-            function<long long(int, int, bool)> dfs = [&](int i, int cnt1, bool is_limit) -> long long {
-                if (i < 0) return cnt1;
-                if (!is_limit && memo[i][cnt1] >= 0) return memo[i][cnt1];
+            auto dfs = [&](auto&& dfs, int i, int cnt1, bool is_limit) -> long long {
+                if (i < 0) {
+                    return cnt1;
+                }
+                if (!is_limit && memo[i][cnt1] >= 0) {
+                    return memo[i][cnt1];
+                }
                 int up = is_limit ? num >> i & 1 : 1;
                 long long res = 0;
-                for (int d = 0; d <= up; d++) // 枚举要填入的数字 d
-                    res += dfs(i - 1, cnt1 + (d == 1 && (i + 1) % x == 0), is_limit && d == up);
-                if (!is_limit) memo[i][cnt1] = res;
+                for (int d = 0; d <= up; d++) { // 枚举要填入的数字 d
+                    res += dfs(dfs, i - 1, cnt1 + (d == 1 && (i + 1) % x == 0), is_limit && d == up);
+                }
+                if (!is_limit) {
+                    memo[i][cnt1] = res;
+                }
                 return res;
             };
-            return dfs(m - 1, 0, true) <= k;
+            return dfs(dfs, m - 1, 0, true) <= k;
         };
 
         // 开区间二分，原理见 https://www.bilibili.com/video/BV1AP41137w7/
@@ -121,44 +134,44 @@ public:
 
 ```go [sol-Go]
 func findMaximumNumber(k int64, x int) int64 {
-	ans := sort.Search(int(k+1)<<x, func(num int) bool {
-		num++
-		n := bits.Len(uint(num))
-		memo := make([][]int, n)
-		for i := range memo {
-			memo[i] = make([]int, n+1)
-			for j := range memo[i] {
-				memo[i][j] = -1
-			}
-		}
-		var dfs func(int, int, bool) int
-		dfs = func(i, cnt1 int, limitHigh bool) (res int) {
-			if i < 0 {
-				return cnt1
-			}
-			if !limitHigh {
-				p := &memo[i][cnt1]
-				if *p >= 0 {
-					return *p
-				}
-				defer func() { *p = res }()
-			}
-			up := 1
-			if limitHigh {
-				up = num >> i & 1
-			}
-			for d := 0; d <= up; d++ {
-				c := cnt1
-				if d == 1 && (i+1)%x == 0 {
-					c++
-				}
-				res += dfs(i-1, c, limitHigh && d == up)
-			}
-			return
-		}
-		return dfs(n-1, 0, true) > int(k)
-	})
-	return int64(ans)
+    ans := sort.Search(int(k+1)<<x, func(num int) bool {
+        num++
+        n := bits.Len(uint(num))
+        memo := make([][]int, n)
+        for i := range memo {
+            memo[i] = make([]int, n+1)
+            for j := range memo[i] {
+                memo[i][j] = -1
+            }
+        }
+        var dfs func(int, int, bool) int
+        dfs = func(i, cnt1 int, limitHigh bool) (res int) {
+            if i < 0 {
+                return cnt1
+            }
+            if !limitHigh {
+                p := &memo[i][cnt1]
+                if *p >= 0 {
+                    return *p
+                }
+                defer func() { *p = res }()
+            }
+            up := 1
+            if limitHigh {
+                up = num >> i & 1
+            }
+            for d := 0; d <= up; d++ {
+                c := cnt1
+                if d == 1 && (i+1)%x == 0 {
+                    c++
+                }
+                res += dfs(i-1, c, limitHigh && d == up)
+            }
+            return
+        }
+        return dfs(n-1, 0, true) > int(k)
+    })
+    return int64(ans)
 }
 ```
 
@@ -214,17 +227,16 @@ class Solution:
     def findMaximumNumber(self, k: int, x: int) -> int:
         def count(num: int) -> int:
             res = 0
-            i = x - 1
-            n = num >> i
-            while n:
-                res += (n // 2) << i
-                if n % 2:
+            # 统计 [1,num] 中的第 i=x,2x,3x,... 个比特位上的 1 的个数
+            i = x - 1  # 注意比特位从 0 开始，不是从 1 开始，所以要减一
+            while num >> i:
+                n = num >> i
+                res += n >> 1 << i
+                if n & 1:
                     mask = (1 << i) - 1
                     res += (num & mask) + 1
                 i += x
-                n >>= x
             return res
-
         return bisect_left(range((k + 1) << x), k + 1, key=count) - 1
 ```
 
@@ -247,10 +259,12 @@ class Solution {
 
     private long countDigitOne(long num, int x) {
         long res = 0;
-        int i = x - 1;
-        for (long n = num >> i; n > 0; n >>= x, i += x) {
-            res += (n / 2) << i;
-            if (n % 2 > 0) {
+        // 统计 [1,num] 中的第 i=x,2x,3x,... 个比特位上的 1 的个数
+        // 注意比特位从 0 开始，不是从 1 开始，所以要减一
+        for (int i = x - 1; (num >> i) > 0; i += x) {
+            long n = num >> i;
+            res += n >> 1 << i;
+            if ((n & 1) > 0) {
                 long mask = (1L << i) - 1;
                 res += (num & mask) + 1;
             }
@@ -266,10 +280,12 @@ public:
     long long findMaximumNumber(long long k, int x) {
         auto check = [&](long long num) {
             long long res = 0;
-            int i = x - 1;
-            for (long long n = num >> i; n; n >>= x, i += x) {
-                res += (n / 2) << i;
-                if (n % 2) {
+            // 统计 [1,num] 中的第 x,2x,3x,... 个比特位上的 1 的个数
+            // 注意比特位从 0 开始，不是从 1 开始，所以要减一
+            for (int i = x - 1; num >> i; i += x) {
+                long long n = num >> i;
+                res += n >> 1 << i;
+                if (n & 1) {
                     long long mask = (1LL << i) - 1;
                     res += (num & mask) + 1;
                 }
@@ -290,21 +306,22 @@ public:
 
 ```go [sol-Go]
 func findMaximumNumber(k int64, x int) int64 {
-	ans := sort.Search(int(k+1)<<x, func(num int) bool {
-		num++
-		res := 0
-		i := x - 1
-		for n := num >> i; n > 0; n >>= x {
-			res += n / 2 << i
-			if n%2 > 0 {
-				mask := 1<<i - 1
-				res += num&mask + 1
-			}
-			i += x
-		}
-		return res > int(k)
-	})
-	return int64(ans)
+    ans := sort.Search(int(k+1)<<x, func(num int) bool {
+        num++
+        res := 0
+        // 统计 [1,num] 中的第 x,2x,3x,... 个比特位上的 1 的个数
+        // 注意比特位从 0 开始，不是从 1 开始，所以要减一
+        for i := x - 1; num>>i > 0; i += x {
+            n := num >> i
+            res += n >> 1 << i
+            if n&1 > 0 {
+                mask := 1<<i - 1
+                res += num&mask + 1
+            }
+        }
+        return res > int(k)
+    })
+    return int64(ans)
 }
 ```
 
@@ -352,7 +369,8 @@ class Solution:
 ```java [sol-Java]
 class Solution {
     public long findMaximumNumber(long k, int x) {
-        long num = 0, pre1 = 0;
+        long num = 0;
+        long pre1 = 0;
         for (long i = 63 - Long.numberOfLeadingZeros((k + 1) << x); i >= 0; i--) {
             long cnt = (pre1 << i) + (i / x << i >> 1);
             if (cnt > k) {
@@ -374,7 +392,7 @@ class Solution {
 public:
     long long findMaximumNumber(long long k, int x) {
         long long num = 0, pre1 = 0;
-        for (long long i = 63 - __builtin_clzll((k + 1) << x); i >= 0; i--) {
+        for (long long i = __lg((k + 1) << x); i >= 0; i--) {
             long long cnt = (pre1 << i) + (i / x << i >> 1);
             if (cnt <= k) {
                 k -= cnt;
@@ -389,20 +407,20 @@ public:
 
 ```go [sol-Go]
 func findMaximumNumber(K int64, x int) int64 {
-	k := int(K)
-	num, pre1 := 0, 0
-	for i := bits.Len(uint((k+1)<<x)) - 1; i >= 0; i-- {
-		cnt := pre1<<i + i/x<<i>>1
-		if cnt > k {
-			continue
-		}
-		k -= cnt
-		num |= 1 << i
-		if (i+1)%x == 0 {
-			pre1++
-		}
-	}
-	return int64(num - 1)
+    k := int(K)
+    num, pre1 := 0, 0
+    for i := bits.Len(uint((k+1)<<x)) - 1; i >= 0; i-- {
+        cnt := pre1<<i + i/x<<i>>1
+        if cnt > k {
+            continue
+        }
+        k -= cnt
+        num |= 1 << i
+        if (i+1)%x == 0 {
+            pre1++
+        }
+    }
+    return int64(num - 1)
 }
 ```
 
@@ -411,18 +429,25 @@ func findMaximumNumber(K int64, x int) int64 {
 - 时间复杂度：$\mathcal{O}(x+\log k)$。
 - 空间复杂度：$\mathcal{O}(1)$。
 
+更多相似题目，见下面的位运算题单。
+
 ## 分类题单
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-
-欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与一般树（前后指针/快慢指针/DFS/BFS/直径/LCA）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

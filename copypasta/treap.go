@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+// 已废弃！请移步新版本泛型代码 ./treap/
+
 /* 树堆 treap=tree+heap
 本质上属于笛卡尔树，见 cartesian_tree.go
 
@@ -16,7 +18,8 @@ https://en.wikipedia.org/wiki/Treap
 额外维护子树和的写法见 https://codeforces.com/contest/1398/submission/119651187
 todo Merging treaps https://codeforces.com/blog/entry/108601
 
-模板题 https://www.luogu.com.cn/problem/P3369 https://www.luogu.com.cn/problem/P6136
+模板题 https://www.luogu.com.cn/problem/P3369 
+      https://www.luogu.com.cn/problem/P6136
 题目推荐 https://cp-algorithms.com/data_structures/treap.html#toc-tgt-8
 https://codeforces.com/problemset/problem/85/D 较为复杂的维护
 https://atcoder.jp/contests/abc245/tasks/abc245_e 离线+lowerbound+delete
@@ -159,7 +162,7 @@ func (t *treap) _delete(o *tpNode, key tpKeyType) *tpNode {
 
 func (t *treap) delete(key tpKeyType) { t.root = t._delete(t.root, key) }
 
-// 其余通用方法见 bst.go
+// 其余通用方法，例如 get/find/prev/next/min/max 见 bst.go
 
 //
 

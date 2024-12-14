@@ -23,6 +23,8 @@ import "math/bits"
 // Limitの线段树题单 https://www.luogu.com.cn/training/1124
 // todo [题单] 线段树的进阶用法 https://www.luogu.com.cn/training/221#problems
 
+// todo Offline Range MEX queries in O(log n) https://codeforces.com/blog/entry/117688
+
 // 注：对于指针写法，必要时禁止 GC，能加速不少
 // func init() { debug.SetGCPercent(-1) }
 
@@ -211,6 +213,8 @@ func (t seg) set(o, val int) {
 	t[o].val = t.mergeInfo(t[o].val, val)
 }
 
+// 下标从 0 开始
+// 调用时 o=1, l=0, r=n-1
 func (t seg) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	if l == r {
@@ -223,7 +227,7 @@ func (t seg) build(a []int, o, l, r int) {
 	t.maintain(o)
 }
 
-// o=1  1<=i<=n
+// 调用时 o=1  0<=i<=n-1
 func (t seg) update(o, i, val int) {
 	if t[o].l == t[o].r {
 		t.set(o, val)
@@ -242,7 +246,7 @@ func (t seg) maintain(o int) {
 	t[o].val = t.mergeInfo(t[o<<1].val, t[o<<1|1].val)
 }
 
-// o=1  [l,r] 1<=l<=r<=n
+// 调用时 o=1  [l,r] 0<=l<=r<=n-1
 func (t seg) query(o, l, r int) int {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].val
@@ -262,9 +266,9 @@ func (t seg) query(o, l, r int) int {
 func (t seg) queryAll() int { return t[1].val }
 
 // 线段树二分：返回 [l,r] 内第一个满足 f 的下标，如果不存在，返回 -1
-// 例如查询 [l,r] 内第一个大于等于 target 的元素下标（下标从 1 开始）
-// 此时线段树维护区间最大值
-// t.findFirst(1, l, r, func(nodeMax int) bool { return nodeMax >= target })
+// 例如查询 [l,r] 内第一个大于等于 target 的元素下标（下标从 1 开始），需要线段树维护区间最大值
+//     t.findFirst(1, l, r, func(nodeMax int) bool { return nodeMax >= target })
+// 调用时 o=1
 // https://leetcode.cn/problems/booking-concert-tickets-in-groups/
 // - https://leetcode.cn/problems/booking-concert-tickets-in-groups/submissions/517574644/
 // https://leetcode.cn/problems/find-building-where-alice-and-bob-can-meet/
@@ -284,9 +288,9 @@ func (t seg) findFirst(o, l, r int, f func(int) bool) int {
 }
 
 // 线段树二分：返回 [l,r] 内最后一个满足 f 的下标，如果不存在，返回 -1
-// 例如查询 [l,r] 内最后一个小于等于 target 的元素下标（下标从 1 开始）
-// 此时线段树维护区间最小值
-// t.findLast(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
+// 例如查询 [l,r] 内最后一个小于等于 target 的元素下标（下标从 1 开始），需要线段树维护区间最小值
+//     t.findLast(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
+// 调用时 o=1
 func (t seg) findLast(o, l, r int, f func(int) bool) int {
 	if t[o].l > r || t[o].r < l || !f(t[o].val) {
 		return -1
@@ -329,6 +333,7 @@ func newSegmentTree(a []int) seg {
 // + ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/D
 //     https://www.luogu.com.cn/problem/P2068
 //     https://www.luogu.com.cn/problem/P3372
+// + + ∑ https://atcoder.jp/contests/abc357/tasks/abc357_f
 // | & https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/C
 // = min https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/E
 // = ∑ https://codeforces.com/edu/course/2/lesson/5/2/practice/contest/279653/problem/F 
@@ -337,16 +342,17 @@ func newSegmentTree(a []int) seg {
 // 单点查询的简化写法 https://codeforces.com/problemset/problem/292/E 1900
 // - https://codeforces.com/contest/292/submission/173659179
 // 不含任何长度 >= 2 的回文串 https://codeforces.com/contest/1881/problem/G 2000
-// https://codeforces.com/problemset/problem/620/E  2100
-// https://codeforces.com/problemset/problem/1295/E 2200
-// https://codeforces.com/problemset/problem/1557/D 2200 max max 离散化 
-// https://codeforces.com/problemset/problem/718/C  2300 矩阵乘法 ∑ 
-// https://codeforces.com/problemset/problem/145/E  2400
-// https://codeforces.com/problemset/problem/1114/F 2400
-// https://codeforces.com/problemset/problem/240/F  2600
-// https://codeforces.com/problemset/problem/1439/C 2600 =max 求和的 O(log^2) 性质 
-// https://codeforces.com/problemset/problem/1614/E 2600
-// https://codeforces.com/problemset/problem/794/F  2800 数位修改 考察对懒标记的理解 
+// https://codeforces.com/problemset/problem/620/E   2100
+// https://codeforces.com/problemset/problem/1295/E  2200
+// https://codeforces.com/problemset/problem/1557/D  2200 max max 离散化 
+// https://codeforces.com/problemset/problem/718/C   2300 矩阵乘法 ∑ 
+// https://codeforces.com/problemset/problem/145/E   2400
+// https://codeforces.com/problemset/problem/1114/F  2400
+// https://codeforces.com/problemset/problem/240/F   2600
+// https://codeforces.com/problemset/problem/1439/C  2600 =max 求和的 O(log^2) 性质 
+// https://codeforces.com/problemset/problem/1614/E  2600
+// https://codeforces.com/problemset/problem/2009/G3 2700
+// https://codeforces.com/problemset/problem/794/F   2800 数位修改 考察对懒标记的理解 
 // todo https://codeforces.com/problemset/problem/1209/G2 3200
 // 线段树二分与更新合并 LC2589 https://leetcode.cn/problems/minimum-time-to-complete-all-tasks/
 //                   LCP32 https://leetcode.cn/problems/t3fKg1/
@@ -408,6 +414,8 @@ func (t lazySeg) spread(o int) {
 	}
 }
 
+// 下标从 0 开始
+// 调用时 o=1, l=0, r=n-1
 func (t lazySeg) build(a []int, o, l, r int) {
 	t[o].l, t[o].r = l, r
 	t[o].todo = todoInit
@@ -421,7 +429,7 @@ func (t lazySeg) build(a []int, o, l, r int) {
 	t.maintain(o)
 }
 
-// o=1  [l,r] 1<=l<=r<=n
+// 调用时 o=1  [l,r] 0<=l<=r<=n-1
 func (t lazySeg) update(o, l, r int, v int) {
 	if l <= t[o].l && t[o].r <= r {
 		t.do(o, v)
@@ -442,7 +450,7 @@ func (t lazySeg) maintain(o int) {
 	t[o].sum = t.mergeInfo(t[o<<1].sum, t[o<<1|1].sum)
 }
 
-// o=1  [l,r] 1<=l<=r<=n
+// 调用时 o=1  [l,r] 0<=l<=r<=n-1
 func (t lazySeg) query(o, l, r int) int {
 	if l <= t[o].l && t[o].r <= r {
 		return t[o].sum
@@ -463,9 +471,9 @@ func (t lazySeg) query(o, l, r int) int {
 func (t lazySeg) queryAll() int { return t[1].sum }
 
 // 线段树二分：返回 [l,r] 内第一个满足 f 的下标，如果不存在，返回 -1
-// 例如查询 [l,r] 内第一个大于等于 target 的元素下标（下标从 1 开始）
-// 此时线段树维护区间最大值
-// t.findFirst(1, l, r, func(nodeMax int) bool { return nodeMax >= target })
+// 例如查询 [l,r] 内第一个大于等于 target 的元素下标（下标从 1 开始），需要线段树维护区间最大值
+//     t.findFirst(1, l, r, func(nodeMax int) bool { return nodeMax >= target })
+// 调用时 o=1
 func (t lazySeg) findFirst(o, l, r int, f func(int) bool) int {
 	if t[o].l > r || t[o].r < l || !f(t[o].sum) {
 		return -1
@@ -482,9 +490,9 @@ func (t lazySeg) findFirst(o, l, r int, f func(int) bool) int {
 }
 
 // 线段树二分：返回 [l,r] 内最后一个满足 f 的下标，如果不存在，返回 -1
-// 例如查询 [l,r] 内最后一个小于等于 target 的元素下标（下标从 1 开始）
-// 此时线段树维护区间最小值
-// t.findLast(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
+// 例如查询 [l,r] 内最后一个小于等于 target 的元素下标（下标从 1 开始），需要线段树维护区间最小值
+//     t.findLast(1, l, r, func(nodeMin int) bool { return nodeMin <= target })
+// 调用时 o=1
 func (t lazySeg) findLast(o, l, r int, f func(int) bool) int {
 	if t[o].l > r || t[o].r < l || !f(t[o].sum) {
 		return -1
@@ -531,6 +539,13 @@ func (t lazySeg) spreadAll(o int) {
 // todo https://codeforces.com/problemset/problem/1614/E 2600
 // https://atcoder.jp/contests/abc351/tasks/abc351_f
 // 树套树见 fenwick_tree.go
+var emptyStNode = &stNode{val: stNodeDefaultVal}
+
+func init() {
+	emptyStNode.lo = emptyStNode
+	emptyStNode.ro = emptyStNode
+}
+
 const stNodeDefaultVal = 0 // 如果求最大值并且有负数，改成 math.MinInt
 
 type stNode struct {
@@ -539,24 +554,12 @@ type stNode struct {
 	val    int
 }
 
-var emptyStNode = &stNode{val: stNodeDefaultVal}
-
-func init() {
-	emptyStNode.lo = emptyStNode
-	emptyStNode.ro = emptyStNode
-}
-
-// 0 1e9
-// -2e9 2e9
-func newStRoot(l, r int) *stNode {
-	return &stNode{lo: emptyStNode, ro: emptyStNode, l: l, r: r, val: stNodeDefaultVal}
-}
-
 func (stNode) mergeInfo(a, b int) int {
 	return max(a, b)
 }
 
 func (o *stNode) maintain() {
+	// 注意这里没有判断 o.lo 和 o.ro 是空的，因为用的 emptyStNode
 	o.val = o.mergeInfo(o.lo.val, o.ro.val)
 }
 
@@ -590,49 +593,40 @@ func (o *stNode) query(l, r int) int {
 	return o.mergeInfo(o.lo.query(l, r), o.ro.query(l, r))
 }
 
+// 询问范围的最小值、最大值
+// 0 1e9
+// -2e9 2e9
+func newStRoot(l, r int) *stNode {
+	return &stNode{lo: emptyStNode, ro: emptyStNode, l: l, r: r, val: stNodeDefaultVal}
+}
+
 // 动态开点线段树·其二·延迟标记（区间修改）
 // https://codeforces.com/problemset/problem/915/E（注：此题有多种解法）
 // https://codeforces.com/edu/course/2/lesson/5/4/practice/contest/280801/problem/F https://www.luogu.com.cn/problem/P5848
 //（内存受限）https://codeforces.com/problemset/problem/1557/D
-const stNodeDefaultTodoVal = 0
+var emptyLazyNode = &lazyNode{sum: lazyNodeDefaultVal, todo: lazyNodeDefaultTodoVal}
 
-var lazyRoot = &lazyNode{l: 1, r: 1e9, sum: stNodeDefaultVal}
+func init() {
+	emptyLazyNode.lo = emptyLazyNode
+	emptyLazyNode.ro = emptyLazyNode
+}
+
+const lazyNodeDefaultVal = 0
+const lazyNodeDefaultTodoVal = 0
 
 type lazyNode struct {
 	lo, ro *lazyNode
 	l, r   int
-	sum    int
+	sum    int // info
 	todo   int
 }
 
-func (o *lazyNode) get() int {
-	if o != nil {
-		return o.sum
-	}
-	return stNodeDefaultVal
-}
-
-func (lazyNode) op(a, b int) int {
+func (lazyNode) mergeInfo(a, b int) int {
 	return a + b // max(a, b)
 }
 
 func (o *lazyNode) maintain() {
-	o.sum = o.op(o.lo.get(), o.ro.get())
-}
-
-func (o *lazyNode) build(a []int, l, r int) {
-	o.l, o.r = l, r
-	o.todo = stNodeDefaultTodoVal
-	if l == r {
-		o.sum = a[l-1]
-		return
-	}
-	m := (l + r) >> 1
-	o.lo = &lazyNode{}
-	o.lo.build(a, l, m)
-	o.ro = &lazyNode{}
-	o.ro.build(a, m+1, r)
-	o.maintain()
+	o.sum = o.mergeInfo(o.lo.sum, o.ro.sum)
 }
 
 func (o *lazyNode) do(add int) {
@@ -642,16 +636,16 @@ func (o *lazyNode) do(add int) {
 
 func (o *lazyNode) spread() {
 	m := (o.l + o.r) >> 1
-	if o.lo == nil {
-		o.lo = &lazyNode{l: o.l, r: m, sum: stNodeDefaultVal}
+	if o.lo == emptyLazyNode {
+		o.lo = &lazyNode{lo: emptyLazyNode, ro: emptyLazyNode, l: o.l, r: m, sum: lazyNodeDefaultVal, todo: lazyNodeDefaultTodoVal}
 	}
-	if o.ro == nil {
-		o.ro = &lazyNode{l: m + 1, r: o.r, sum: stNodeDefaultVal}
+	if o.ro == emptyLazyNode {
+		o.ro = &lazyNode{lo: emptyLazyNode, ro: emptyLazyNode, l: m + 1, r: o.r, sum: lazyNodeDefaultVal, todo: lazyNodeDefaultTodoVal}
 	}
-	if todo := o.todo; todo != stNodeDefaultTodoVal {
-		o.lo.do(todo)
-		o.ro.do(todo)
-		o.todo = stNodeDefaultTodoVal
+	if v := o.todo; v != lazyNodeDefaultTodoVal {
+		o.lo.do(v)
+		o.ro.do(v)
+		o.todo = lazyNodeDefaultTodoVal
 	}
 }
 
@@ -672,8 +666,8 @@ func (o *lazyNode) update(l, r int, add int) {
 }
 
 func (o *lazyNode) query(l, r int) int {
-	if o == nil || l > o.r || r < o.l {
-		return stNodeDefaultVal
+	if o == emptyLazyNode || l > o.r || r < o.l {
+		return lazyNodeDefaultVal
 	}
 	if l <= o.l && o.r <= r {
 		return o.sum
@@ -681,7 +675,14 @@ func (o *lazyNode) query(l, r int) int {
 	o.spread()
 	lRes := o.lo.query(l, r)
 	rRes := o.ro.query(l, r)
-	return o.op(lRes, rRes)
+	return o.mergeInfo(lRes, rRes)
+}
+
+// 询问范围的最小值、最大值
+// 0 1e9
+// -2e9 2e9
+func newLazyRoot(l, r int) *lazyNode {
+	return &lazyNode{lo: emptyLazyNode, ro: emptyLazyNode, l: l, r: r, sum: lazyNodeDefaultVal, todo: lazyNodeDefaultTodoVal}
 }
 
 // EXTRA: 线段树合并
@@ -749,6 +750,7 @@ func (o *stNode) kth(k int) int {
 
 // 线段树分治
 // todo https://www.luogu.com.cn/problem/P5787
+//  https://codeforces.com/problemset/problem/1140/F 2600
 
 // 可持久化线段树（又称函数式线段树、主席树） Persistent Segment Tree
 // https://oi-wiki.org/ds/persistent-seg/

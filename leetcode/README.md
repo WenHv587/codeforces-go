@@ -54,12 +54,14 @@
 ||[141. 环形链表](https://leetcode.cn/problems/linked-list-cycle/)|[代码](https://leetcode.cn/problems/linked-list-cycle/solutions/1999269/mei-xiang-ming-bai-yi-ge-shi-pin-jiang-t-c4sw/)||
 ||[142. 环形链表 II](https://leetcode.cn/problems/linked-list-cycle-ii/)|[代码](https://leetcode.cn/problems/linked-list-cycle-ii/solutions/1999271/mei-xiang-ming-bai-yi-ge-shi-pin-jiang-t-nvsq/)||
 ||[143. 重排链表](https://leetcode.cn/problems/reorder-list/)|[代码](https://leetcode.cn/problems/reorder-list/solutions/1999276/mei-xiang-ming-bai-yi-ge-shi-pin-jiang-t-u66q/)||
+||[234. 回文链表](https://leetcode.cn/problems/palindrome-linked-list/)|[代码](https://leetcode.cn/problems/palindrome-linked-list/solution/o1-kong-jian-zuo-fa-xun-zhao-zhong-jian-rv0f3/)|*课后作业|
 |[链表 - 删除系列](https://www.bilibili.com/video/BV1VP4y1Q71e/)|[237. 删除链表中的节点](https://leetcode.cn/problems/delete-node-in-a-linked-list/)|[代码](https://leetcode.cn/problems/delete-node-in-a-linked-list/solutions/2004056/ru-he-shan-chu-jie-dian-liu-fen-zhong-ga-x3kn/)|脑筋急转弯|
 ||[19. 删除链表的倒数第 N 个结点](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/)|[代码](https://leetcode.cn/problems/remove-nth-node-from-end-of-list/solutions/2004057/ru-he-shan-chu-jie-dian-liu-fen-zhong-ga-xpfs/)|前后指针|
 ||[83. 删除排序链表中的重复元素](https://leetcode.cn/problems/remove-duplicates-from-sorted-list/)|[代码](https://leetcode.cn/problems/remove-duplicates-from-sorted-list/solutions/2004062/ru-he-qu-zhong-yi-ge-shi-pin-jiang-tou-p-98g7/)||
 ||[82. 删除排序链表中的重复元素 II](https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/)|[代码](https://leetcode.cn/problems/remove-duplicates-from-sorted-list-ii/solutions/2004067/ru-he-qu-zhong-yi-ge-shi-pin-jiang-tou-p-2ddn/)||
 ||[203. 移除链表元素](https://leetcode.cn/problems/remove-linked-list-elements/)|[代码](https://leetcode.cn/problems/remove-linked-list-elements/solution/tao-lu-ru-he-you-ya-di-shan-chu-lian-bia-ah8z/)|*课后作业|
 ||[3217. 从链表中移除在数组中存在的节点](https://leetcode.cn/problems/delete-nodes-from-linked-list-present-in-array/)|[代码](https://leetcode.cn/problems/delete-nodes-from-linked-list-present-in-array/solution/shao-bing-jie-dian-yi-ci-bian-li-pythonj-imre/)|*课后作业|
+||[2487. 从链表中移除节点](https://leetcode.cn/problems/remove-nodes-from-linked-list/)|[代码](https://leetcode.cn/problems/remove-nodes-from-linked-list/solution/di-gui-jian-ji-xie-fa-by-endlesscheng-jfwi/)|*课后作业|
 |[二叉树与递归 - 深入理解](https://www.bilibili.com/video/BV1UD4y1Y769/)|[104. 二叉树的最大深度](https://leetcode.cn/problems/maximum-depth-of-binary-tree/)|[代码](https://leetcode.cn/problems/maximum-depth-of-binary-tree/solution/kan-wan-zhe-ge-shi-pin-rang-ni-dui-di-gu-44uz/)|两种方法|
 ||[111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)|[代码](https://leetcode.cn/problems/minimum-depth-of-binary-tree/solution/liang-chong-fang-fa-zi-ding-xiang-xia-zi-0sxz/)|*课后作业|
 ||[112. 路径总和](https://leetcode.cn/problems/path-sum/)|[代码](https://leetcode.cn/problems/path-sum/solution/jian-ji-xie-fa-pythonjavacgojsrust-by-en-icwe/)|*课后作业|
@@ -70,16 +72,19 @@
 ||[101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/)|[代码](https://leetcode.cn/problems/symmetric-tree/solutions/2015063/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-6dq5/)||
 ||[110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)|[代码](https://leetcode.cn/problems/balanced-binary-tree/solutions/2015068/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-c3wj/)||
 ||[199. 二叉树的右视图](https://leetcode.cn/problems/binary-tree-right-side-view/)|[代码](https://leetcode.cn/problems/binary-tree-right-side-view/solutions/2015061/ru-he-ling-huo-yun-yong-di-gui-lai-kan-s-r1nc/)||
+||[226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/)|[代码](https://leetcode.cn/problems/invert-binary-tree/solution/shi-pin-shen-ru-li-jie-di-gui-pythonjava-zhqh/)|*课后作业|
+||[617. 合并二叉树](https://leetcode.cn/problems/merge-two-binary-trees/)|[代码](https://leetcode.cn/problems/merge-two-binary-trees/solution/kan-dao-di-gui-jiu-yun-dai-ni-li-jie-di-leixm/)|*课后作业|
 ||[1026. 节点与其祖先之间的最大差值](https://leetcode.cn/problems/maximum-difference-between-node-and-ancestor/)|[代码](https://leetcode.cn/problems/maximum-difference-between-node-and-ancestor/solution/liang-chong-fang-fa-zi-ding-xiang-xia-zi-wj9v/)|*课后作业|
 ||[1080. 根到叶路径上的不足节点](https://leetcode.cn/problems/insufficient-nodes-in-root-to-leaf-paths/)|[代码](https://leetcode.cn/problems/insufficient-nodes-in-root-to-leaf-paths/solution/jian-ji-xie-fa-diao-yong-zi-shen-pythonj-64lf/)|*课后作业|
-||[1110. 删点成林](https://leetcode.cn/problems/delete-nodes-and-return-forest/)|[代码](https://leetcode.cn/problems/delete-nodes-and-return-forest/solution/he-shi-ji-lu-da-an-pythonjavacgo-by-endl-lpcd/)|*课后作业|
 |[二叉树与递归 - 前序/中序/后序](https://www.bilibili.com/video/BV14G411P7C1/)|[98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/)|[代码](https://leetcode.cn/problems/validate-binary-search-tree/solutions/2020306/qian-xu-zhong-xu-hou-xu-san-chong-fang-f-yxvh/)|三种方法|
 ||[938. 二叉搜索树的范围和](https://leetcode.cn/problems/range-sum-of-bst/)|[代码](https://leetcode.cn/problems/range-sum-of-bst/solution/jian-ji-xie-fa-pythonjavacgojsrust-by-en-7jw4/)|*课后作业|
 ||[2476. 二叉搜索树最近节点查询](https://leetcode.cn/problems/closest-nodes-queries-in-a-binary-search-tree/)|[代码](https://leetcode.cn/problems/closest-nodes-queries-in-a-binary-search-tree/solution/zhong-xu-bian-li-er-fen-cha-zhao-pythonj-4ic0/)|*课后作业|
+||[230. 二叉搜索树中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-bst/)|[代码](https://leetcode.cn/problems/kth-smallest-element-in-a-bst/solution/zhong-xu-bian-li-pythonjavaccgojsrust-by-wc02/)|*课后作业|
 ||[1373. 二叉搜索子树的最大键值和](https://leetcode.cn/problems/maximum-sum-bst-in-binary-tree/)|[代码](https://leetcode.cn/problems/maximum-sum-bst-in-binary-tree/solution/hou-xu-bian-li-pythonjavacgo-by-endlessc-gll3/)|*课后作业|
 ||[105. 从前序与中序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/)|[代码](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-inorder-traversal/solution/tu-jie-cong-on2-dao-onpythonjavacgojsrus-aob8/)|*课后作业|
 ||[106. 从中序与后序遍历序列构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/)|[代码](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/solution/tu-jie-cong-on2-dao-onpythonjavacgojsrus-w8ny/)|*课后作业|
 ||[889. 根据前序和后序遍历构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-postorder-traversal/)|[代码](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-postorder-traversal/solution/tu-jie-cong-on2-dao-onpythonjavacgojsrus-h0o5/)|*课后作业|
+||[1110. 删点成林](https://leetcode.cn/problems/delete-nodes-and-return-forest/)|[代码](https://leetcode.cn/problems/delete-nodes-and-return-forest/solution/he-shi-ji-lu-da-an-pythonjavacgo-by-endl-lpcd/)|*课后作业|
 |[二叉树与递归 - 最近公共祖先](https://www.bilibili.com/video/BV1W44y1Z7AR/)|[236. 二叉树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/)|[代码](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-tree/solutions/2023872/fen-lei-tao-lun-luan-ru-ma-yi-ge-shi-pin-2r95/)||
 ||[235. 二叉搜索树的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/)|[代码](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/solutions/2023873/zui-jin-gong-gong-zu-xian-yi-ge-shi-pin-8h2zc/)||
 ||[1123. 最深叶节点的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-deepest-leaves/)|[代码](https://leetcode.cn/problems/lowest-common-ancestor-of-deepest-leaves/solution/liang-chong-di-gui-si-lu-pythonjavacgojs-xxnk/)|*课后作业|
@@ -94,6 +99,7 @@
 |[回溯 - 子集型](https://www.bilibili.com/video/BV1mG4y1A7Gu/)|[17. 电话号码的字母组合](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/)|[代码](https://leetcode.cn/problems/letter-combinations-of-a-phone-number/solutions/2059416/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-3orv/)|引入回溯概念用|
 ||[78. 子集](https://leetcode.cn/problems/subsets/)|[代码](https://leetcode.cn/problems/subsets/solutions/2059409/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-8tkl/)|两种写法|
 ||[131. 分割回文串](https://leetcode.cn/problems/palindrome-partitioning/)|[代码](https://leetcode.cn/problems/palindrome-partitioning/solutions/2059414/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-fues/)|两种写法|
+||[2698. 求一个整数的惩罚数](https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/)|[代码](https://leetcode.cn/problems/find-the-punishment-number-of-an-integer/solutions/2277792/yu-chu-li-hui-su-by-endlesscheng-ro3s/)|*课后作业|
 |[回溯 - 组合型与剪枝](https://www.bilibili.com/video/BV1xG4y1F7nC/)|[77. 组合](https://leetcode.cn/problems/combinations/)|[代码](https://leetcode.cn/problems/combinations/solutions/2071017/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-65lh/)|两种写法|
 ||[216. 组合总和 III](https://leetcode.cn/problems/combination-sum-iii/)|[代码](https://leetcode.cn/problems/combination-sum-iii/solutions/2071013/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-feme/)|两种写法|
 ||[22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)|[代码](https://leetcode.cn/problems/generate-parentheses/solutions/2071015/hui-su-bu-hui-xie-tao-lu-zai-ci-pythonja-wcdw/)|两种写法|
@@ -130,6 +136,7 @@
 |[区间 DP](https://www.bilibili.com/video/BV1Gs4y1E7EU/)|[516. 最长回文子序列](https://leetcode.cn/problems/longest-palindromic-subsequence/)|[代码](https://leetcode.cn/problems/longest-palindromic-subsequence/solution/shi-pin-jiao-ni-yi-bu-bu-si-kao-dong-tai-kgkg/)|包含空间优化|
 ||[1039. 多边形三角剖分的最低得分](https://leetcode.cn/problems/minimum-score-triangulation-of-polygon/)|[代码](https://leetcode.cn/problems/minimum-score-triangulation-of-polygon/solution/shi-pin-jiao-ni-yi-bu-bu-si-kao-dong-tai-aty6/)||
 ||[3040. 相同分数的最大操作数目 II](https://leetcode.cn/problems/maximum-number-of-operations-with-the-same-score-ii/)|[代码](https://leetcode.cn/problems/maximum-number-of-operations-with-the-same-score-ii/solution/qu-jian-dp-de-tao-lu-pythonjavacgo-by-en-nynz/)|*课后作业|
+||[1547. 切棍子的最小成本](https://leetcode.cn/problems/minimum-cost-to-cut-a-stick/)|[代码](https://leetcode.cn/problems/minimum-cost-to-cut-a-stick/solution/jiao-ni-yi-bu-bu-si-kao-qu-jian-dpcong-j-f8px/)|*课后作业|
 ||[1771. 由子序列构造的最长回文串的长度](https://leetcode.cn/problems/maximize-palindrome-length-from-subsequences/)|[代码](https://leetcode.cn/problems/maximize-palindrome-length-from-subsequences/solution/shi-pin-qiao-miao-zhuan-huan-516-bian-xi-jhrt/)|*课后作业|
 ||[1000. 合并石头的最低成本](https://leetcode.cn/problems/minimum-cost-to-merge-stones/)|[代码](https://leetcode.cn/problems/minimum-cost-to-merge-stones/solution/tu-jie-qu-jian-dpzhuang-tai-she-ji-yu-yo-ppv0/)|*课后作业|
 |[树形 DP - 直径系列](https://www.bilibili.com/video/BV17o4y187h1/)|[543. 二叉树的直径](https://leetcode.cn/problems/diameter-of-binary-tree/)|[代码](https://leetcode.cn/problems/diameter-of-binary-tree/solution/shi-pin-che-di-zhang-wo-zhi-jing-dpcong-taqma/)||
@@ -163,9 +170,9 @@
 
 ### 分类题单
 
-[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+🔥[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -174,7 +181,9 @@
 7. 🔥[动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 ### 周赛总结
 

@@ -2,9 +2,9 @@
 
 **前置知识**：[动态规划入门：从记忆化搜索到递推](https://www.bilibili.com/video/BV1Xj411K7oF/)，其中包含如何把记忆化搜索 1:1 翻译成递推的技巧。
 
-看示例 3，$\textit{zero}=3,\ \textit{one}=3,\ \textit{limit}=2$。
-
 先解释 $\textit{limit}$，意思是数组中至多有连续 $\textit{limit}$ 个 $0$，且至多有连续 $\textit{limit}$ 个 $1$。
+
+看示例 3，$\textit{zero}=3,\ \textit{one}=3,\ \textit{limit}=2$。
 
 考虑稳定数组的最后一个位置填 $0$ 还是 $1$：
 
@@ -16,16 +16,26 @@
 
 改成定义 $\textit{dfs}(i,j,k)$ 表示用 $i$ 个 $0$ 和 $j$ 个 $1$ 构造稳定数组的方案数，其中第 $i+j$ 个位置要填 $k$，其中 $k$ 为 $0$ 或 $1$。
 
-如果 $k=0$，考虑第 $i+j-1$ 个位置要填什么：
+考虑 $\textit{dfs}(i,j,0)$ 怎么算。现在，第 $i+j$ 个位置填的是 $0$，考虑第 $i+j-1$ 个位置要填什么：
 
-- 填 $0$，问题变成 $\textit{dfs}(i-1,j,0)$。
-- 填 $1$，问题变成 $\textit{dfs}(i-1,j,1)$。
+- 填 $0$，方案数就是 $\textit{dfs}(i-1,j,0)$。
+- 填 $1$，方案数就是 $\textit{dfs}(i-1,j,1)$。
 
-但是，$\textit{dfs}(i-1,j,0)$ 包含了「最后连续 $\textit{limit}$ 个位置填 $0$」的方案，如果在这个方案末尾再加一个 $0$，就有连续 $\textit{limit}+1$ 个 $0$ 了，这是不合法的。
+看上去，把这两种情况加起来，我们就得到了 $\textit{dfs}(i,j,0)$。但是，这个过程中会产生不合法的情况。
 
-$\textit{dfs}(i-1,j,0)$ 中的「最后连续 $\textit{limit}$ 个位置填 $0$」的方案有多少个？
+假设 $\textit{limit}=3$，$\textit{dfs}(i-1,j,0)$ 是一些以 $0$ 结尾的稳定数组（合法数组），考虑末尾 $0$ 的个数：
 
-因为 $\textit{dfs}$ 的定义是稳定数组的方案数，只包含合法方案，所以在最后连续 $\textit{limit}$ 个位置填 $0$ 的情况下，倒数第 $\textit{limit}+1$ 个位置一定要填 $1$，这有 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 种方案。对于 $\textit{dfs}(i,j,0)$ 来说，这 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 个方案就是不合法方案了，要减去，得
+- 末尾有 $1$ 个 $0$：那么末尾必定是 $10$。
+- 末尾有 $2$ 个 $0$：那么末尾必定是 $100$。
+- 末尾有 $3$ 个 $0$：那么末尾必定是 $1000$。注意，由于末尾不能超过 $3$ 个 $0$，所以这样的稳定数组的倒数第 $4$ 个数一定是 $1$，也就是在 $\textit{dfs}(i-1,j,0)$ 中有 $\textit{dfs}(i-4,j,1)$ 个末尾是 $1000$ 的稳定数组。
+
+若要通过 $\textit{dfs}(i-1,j,0)$ 计算 $\textit{dfs}(i,j,0)$，相当于往这 $\textit{dfs}(i-1,j,0)$ 个稳定数组的末尾再加一个 $0$：
+
+- 末尾有 $2$ 个 $0$，即 $100$，这是合法的。
+- 末尾有 $3$ 个 $0$，即 $1000$，这是合法的。
+- 末尾有 $4$ 个 $0$，即 $10000$，这是不合法的，要**全部去掉**！根据上面的分析，要减去 $\textit{dfs}(i-4,j,1)$。
+
+一般地，因为 $\textit{dfs}$ 的定义是稳定数组的方案数，只包含合法方案，所以在最后连续 $\textit{limit}$ 个位置填 $0$ 的情况下，倒数第 $\textit{limit}+1$ 个位置一定要填 $1$，这有 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 种方案。对于 $\textit{dfs}(i,j,0)$ 来说，这 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 个方案就是不合法方案了，要减掉，得
 
 $$
 \textit{dfs}(i,j,0) = \textit{dfs}(i-1,j,0) + \textit{dfs}(i-1,j,1) - \textit{dfs}(i-\textit{limit}-1,j,1)
@@ -37,7 +47,7 @@ $$
 \textit{dfs}(i,j,1) = \textit{dfs}(i,j-1,0) + \textit{dfs}(i,j-1,1) - \textit{dfs}(i,j-\textit{limit}-1,0)
 $$
 
-递归边界 1：如果 $i<0$ 或者 $j<0$，返回 $0$。也可以在计算 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 前判断 $i>\textit{limit}$，在计算 $\textit{dfs}(i,j-\textit{limit}-1,0)$ 前判断 $j>\textit{limit}$。
+递归边界 1：如果 $i<0$ 或者 $j<0$，返回 $0$。也可以在递归 $\textit{dfs}(i-\textit{limit}-1,j,1)$ 前判断 $i>\textit{limit}$，在递归 $\textit{dfs}(i,j-\textit{limit}-1,0)$ 前判断 $j>\textit{limit}$。下面代码在递归前判断。
 
 递归边界 2：如果 $i=0$，那么当 $k=1$ 且 $j\le \textit{limit}$ 的情况下返回 $1$，否则返回 $0$；如果 $j=0$，那么当 $k=0$ 且 $i\le \textit{limit}$ 的情况下返回 $1$，否则返回 $0$。
 
@@ -191,16 +201,14 @@ func numberOfStableArrays(zero, one, limit int) int {
 
 ## 方法二：递推
 
-根据 [视频](https://www.bilibili.com/video/BV1Xj411K7oF/) 中讲的，把方法一 1:1 地翻译成递推。
-
-定义 $f[i][j][k]$ 表示用 $i$ 个 $0$ 和 $j$ 个 $1$ 构造稳定数组的方案数，其中第 $i+j$ 个位置要填 $k$，其中 $k$ 为 $0$ 或 $1$。
+和 $\textit{dfs}(i,j,k)$ 一样，定义 $f[i][j][k]$ 表示用 $i$ 个 $0$ 和 $j$ 个 $1$ 构造稳定数组的方案数，其中第 $i+j$ 个位置要填 $k$，其中 $k$ 为 $0$ 或 $1$。
 
 状态转移方程：
 
 $$
 \begin{aligned}
-&f[i][j][0] = f[i-1][j][0] + f[i-1][j][1] - f[i-\textit{limit}-1][j][1]\\
-&f[i][j][1] = f[i][j-1][0] + f[i][j-1][1] - f[i][j-\textit{limit}-1][0]
+f[i][j][0] &= f[i-1][j][0] + f[i-1][j][1] - f[i-\textit{limit}-1][j][1]     \\
+f[i][j][1] &= f[i][j-1][0] + f[i][j-1][1] - f[i][j-\textit{limit}-1][0]     \\
 \end{aligned}
 $$
 
@@ -316,14 +324,14 @@ func numberOfStableArrays(zero, one, limit int) (ans int) {
 
 这可以用**隔板法**解决，$n$ 个小球之间有 $n-1$ 个空隙，从中选择 $m-1$ 个空隙，插入 $m-1$ 个隔板，这样就把小球分成了 $m$ 组，并且每一组都是非空的，方案数就是 $n-1$ 选 $m-1$ 的组合数 $\dbinom {n-1} {m-1}$。
 
-回到原问题：
+- 只考虑 $0$，把 $0$ 分成 $i$ 组，方案数就是 $f_0[i] = \dbinom {\textit{zero}-1} {i-1}$；
+- 只考虑 $1$，把 $1$ 分成 $i$ 组，方案数就是 $f_1[i] = \dbinom {\textit{one}-1} {i-1}$。
 
-- 把 $0$ 分成 $i$ 组，方案数就是 $f_0[i] = \dbinom {\textit{zero}-1} {i-1}$；
-- 把 $1$ 分成 $i$ 组，方案数就是 $f_1[i] = \dbinom {\textit{one}-1} {i-1}$。
+如何**综合考虑** $0$ 和 $1$？要如何计算方案数？
 
 例如 $10110001$，相当于把 $0$ 分成了 $2$ 组，把 $1$ 分成了 $3$ 组。
 
-一般地，设 $1$ 分成了 $i$ 组，那么 $0$ 会分成多少组？
+一般地，设 $1$ 分成了 $i$ 组，那么 $0$ 会分成多少组？有哪些情况？
 
 有如下四种情况：
 
@@ -332,7 +340,7 @@ func numberOfStableArrays(zero, one, limit int) (ans int) {
 - $0$ 分成 $i$ 组，且第一个数是 $1$，例如 $10100110$。注意最后一个数一定是 $0$。
 - $0$ 分成 $i+1$ 组，例如 $01010110$。注意第一个数和最后一个数一定是 $0$。
 
-由于 $0$ 和 $1$ 内部的分组方案是互相独立的，例如
+注意 $0$ 和 $1$ 内部的分组方案是互相独立的，例如
 
 $$
 \begin{aligned}
@@ -342,7 +350,9 @@ $$
 \end{aligned}
 $$
 
-$0$ 的分组不变，只有 $1$ 的分组在变。所以根据乘法原理，把 $1$ 分成 $i$ 组的方案数为
+这些例子的 $0$ 的组数不变，$1$ 的组数不变，$0$ 的分组方式也不变（都是一个 $0$ 和三个 $0$），只有 $1$ 的分组方式在变。
+
+根据乘法原理，综合考虑 $0$ 和 $1$，把 $1$ 分成 $i$ 组总的方案数，等于上面说的四种情况（只考虑 $0$，把 $0$ 分成 $i-1,i,i+1$ 组）的方案数之和，乘以只考虑 $1$，把 $1$ 分成 $i$ 组的方案数，即
 
 $$
 (f_0[i-1] + 2\cdot f_0[i] + f_0[i+1])\cdot f_1[i]
@@ -388,7 +398,11 @@ $$
 \sum_{i} (f_0[i-1] + 2\cdot f_0[i] + f_0[i+1])\cdot f_1[i]
 $$
 
-其中 $i\le \textit{one}$ 且 $i\le \textit{zero}+1$ 且 $i\cdot \textit{limit}\ge \textit{one}$，即 $i\ge\left\lceil\dfrac{\textit{one}}{\textit{limit}}\right\rceil$
+其中：
+
+1. $i\le \textit{one}$。因为 $1$ 最多分成 $\textit{one}$ 组。
+2. $i-1\le \textit{zero}$。因为 $0$ 最多分成 $\textit{zero}$ 组，当 $i-1 > \textit{zero}$ 时，上式中的 $f_0[i-1] = f_0[i] = f_0[i+1] = 0$，无需累加。
+3. $i\cdot \textit{limit}\ge \textit{one}$，即 $i\ge\left\lceil\dfrac{\textit{one}}{\textit{limit}}\right\rceil$。因为每组至多 $\textit{limit}$ 个 $1$，分成 $i$ 组，至多 $i\cdot \textit{limit}$ 个 $1$，这个数必须 $\ge \textit{one}$，不然剩下的 $1$ 放到哪一组都会导致组内 $1$ 的个数超过 $\textit{limit}$。
 
 整理得
 
@@ -396,9 +410,13 @@ $$
 \left\lceil\dfrac{\textit{one}}{\textit{limit}}\right\rceil \le i\le \min(\textit{one},\textit{zero}+1)
 $$
 
-代码实现时，上取整 $\left\lceil\dfrac{a}{b}\right\rceil$ 转换成下取整 $\left\lfloor\dfrac{a-1}{b}\right\rfloor+1$。
+代码实现时：
 
-代码实现时，可以预处理阶乘及其 [逆元](https://oi-wiki.org/math/number-theory/inverse/#%E5%BF%AB%E9%80%9F%E5%B9%82%E6%B3%95)，利用公式 $C(n,m) = \dfrac{n!}{m!(n-m)!}$ 计算组合数。
+1. 上取整 $\left\lceil\dfrac{a}{b}\right\rceil$ 转换成下取整 $\left\lfloor\dfrac{a-1}{b}\right\rfloor+1$。
+2. $(-1)^j$ 可以用 $1-j\bmod 2\cdot 2$ 表示，因为当 $j$ 是偶数时，该式为 $1$；当 $j$ 是奇数时，该式为 $-1$，符合 $(-1)^j$。
+3. 预处理阶乘及其逆元，利用公式 $\dbinom {n} {m} = \dfrac{n!}{m!(n-m)!}$ 计算组合数。
+
+关于取模的知识点，见 [模运算的世界：当加减乘除遇上取模](https://leetcode.cn/circle/discuss/mDfnkW/)。
 
 ```py [sol-Python3]
 MOD = 1_000_000_007
@@ -625,13 +643,19 @@ func pow(x, n int) int {
 
 ## 分类题单
 
+[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+
 1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
-3. [单调栈（矩形系列/字典序最小/贡献法）](https://leetcode.cn/circle/discuss/9oZFK9/)
+3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
-5. [位运算（基础/性质/拆位/试填/恒等式/贪心/脑筋急转弯）](https://leetcode.cn/circle/discuss/dHn9Vk/)
+5. [位运算（基础/性质/拆位/试填/恒等式/思维）](https://leetcode.cn/circle/discuss/dHn9Vk/)
 6. [图论算法（DFS/BFS/拓扑排序/最短路/最小生成树/二分图/基环树/欧拉路径）](https://leetcode.cn/circle/discuss/01LUak/)
 7. [动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
+9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
+10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
 
 [我的题解精选（已分类）](https://github.com/EndlessCheng/codeforces-go/blob/master/leetcode/SOLUTIONS.md)
+
+欢迎关注 [B站@灵茶山艾府](https://space.bilibili.com/206214)

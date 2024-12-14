@@ -74,21 +74,18 @@ func rotateMatrix(a matrix) matrix {
 	return b
 }
 
-/* 矩阵运算
-
-## 练习：矩阵快速幂优化 DP
-
-- [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)
-- [509. 斐波那契数](https://leetcode.cn/problems/fibonacci-number/)
-- [1137. 第 N 个泰波那契数](https://leetcode.cn/problems/n-th-tribonacci-number/)
-- [1220. 统计元音字母序列的数目](https://leetcode.cn/problems/count-vowels-permutation/)
-- [552. 学生出勤记录 II](https://leetcode.cn/problems/student-attendance-record-ii/)
-- [790. 多米诺和托米诺平铺](https://leetcode.cn/problems/domino-and-tromino-tiling/)
-- [2851. 字符串转换](https://leetcode.cn/problems/string-transformation/) 2858
+/*
+矩阵快速幂优化 DP
+视频讲解：https://www.bilibili.com/video/BV1hn1MYhEtC/?t=21m27s
+文字讲解：https://leetcode.cn/problems/student-attendance-record-ii/solutions/2885136/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-a8kj/
+m 项递推式，以及包含常数项的情况见《挑战》P201
 https://codeforces.com/problemset/problem/450/B 1300 也可以找规律
 https://www.luogu.com.cn/problem/P10310
+https://ac.nowcoder.com/acm/contest/9247/A
+https://codeforces.com/problemset/problem/1117/D a(n) = a(n-1) + a(n-m)
 
-已知 f(1) = x + 1/x = k，计算 f(n) = x^n + 1/x^n https://www.luogu.com.cn/problem/P9777
+https://www.luogu.com.cn/problem/P9777
+已知 f(1) = x + 1/x = k，计算 f(n) = x^n + 1/x^n
 由于 f(n) * f(1) = f(n+1) + f(n-1)
 所以 f(n+1) = k*f(n) - f(n-1)，矩阵快速幂解决
 */
@@ -102,6 +99,67 @@ func newMatrix(n, m int) matrix {
 	return a
 }
 
+func (a matrix) mul(b matrix) matrix {
+	c := newMatrix(len(a), len(b[0]))
+	for i, row := range a {
+		for k, x := range row {
+			if x == 0 {
+				continue
+			}
+			for j, y := range b[k] {
+				c[i][j] = (c[i][j] + x*y) % mod
+			}
+		}
+	}
+	return c
+}
+
+// a^n * f0
+func (a matrix) powMul(n int, f0 matrix) matrix {
+	res := f0
+	for ; n > 0; n /= 2 {
+		if n%2 > 0 {
+			res = a.mul(res)
+		}
+		a = a.mul(a)
+	}
+	return res
+}
+
+// 操作 k 次
+func solveDP(k int) (ans int) {
+	// 一般是状态机 DP
+	const size = 26 // DP 数组第二维度的大小
+
+	// DP 初始值（递归边界）
+	// 一般是一个全为 1 的列向量，对应初始值 f[0][j]=1 或者递归边界 dfs(0,j)=1
+	f0 := newMatrix(size, 1)
+	for i := range f0 {
+		f0[i][0] = 1
+	}
+
+	// 递推式中的 f[i][j] += f[i-1][k]，提取系数得 m[j][k] = 1
+	m := newMatrix(size, size)
+	for i := range m {
+		m[i][(i+1)%size] = 1 // 举例 f[i][j] = f[i][j+1] + f[i][j+2]
+		m[i][(i+2)%size] = 1
+	}
+
+	// fk 和 f0 一样，都是长为 size 的列向量
+	fk := m.powMul(k, f0)
+
+	// 现在 fk[i][0] 就是 f[k][i] 或者 dfs(k,i)
+	// 特别地，fk[0][0] 就是 f[k][0] 或者 dfs(k,0)
+	for _, row := range fk {
+		ans += row[0] // 举例 ans = sum(f[k])
+	}
+	ans %= mod
+
+	return
+}
+
+// -----------------------------------------------------------------------------
+
 func newIdentityMatrix(n int) matrix {
 	a := make(matrix, n)
 	for i := range a {
@@ -109,22 +167,6 @@ func newIdentityMatrix(n int) matrix {
 		a[i][i] = 1
 	}
 	return a
-}
-
-func (a matrix) mul(b matrix) matrix {
-	const mod = 1_000_000_007 // 998244353
-	c := newMatrix(len(a), len(b[0]))
-	for i, row := range a {
-		for j := range b[0] {
-			for k, v := range row {
-				c[i][j] = (c[i][j] + v*b[k][j]) % mod // 注：此处不能化简
-			}
-			if c[i][j] < 0 {
-				c[i][j] += mod
-			}
-		}
-	}
-	return c
 }
 
 func (a matrix) pow(n int) matrix {
@@ -137,8 +179,6 @@ func (a matrix) pow(n int) matrix {
 	}
 	return res
 }
-
-// -----------------------------------------------------------------------------
 
 // 比如 n*n 的国际象棋的马，从 (sx,sy) 走 k 步到 (tx,ty)，需要多少步
 // 这里可以先 O(n^2) 预处理走一步的转移，构建矩阵 a
@@ -153,10 +193,9 @@ func (a matrix) solve(n, sx, sy, tx, ty, k int) int {
 }
 
 // a(n) = p*a(n-1) + q*a(n-2)
+// a(n-1) = a(n-1)
+// 转成矩阵乘法
 // 注意：数列从 0 开始，若题目从 1 开始则输入的 n 为 n-1
-// https://ac.nowcoder.com/acm/contest/9247/A
-// m 项递推式，以及包含常数项的情况见《挑战》P201
-// a(n) = a(n-1) + a(n-m) https://codeforces.com/problemset/problem/1117/D
 func calcFibonacci(p, q, a0, a1, n int) int {
 	const mod = 1_000_000_007 // 998244353
 	//n--
@@ -400,12 +439,14 @@ type xorBasis struct {
 	canBeZero bool  // 见 minXor 和 kthXor
 	basis     []int // 见 initOnce
 
-	rightMost []int
+	rightMost     []int
+	rightMostZero int
 }
 
 func newXorBasis(a []int) *xorBasis {
-	b := &xorBasis{b: make([]int, 64)} // 32
-	b.rightMost = make([]int, len(b.b))
+	b := &xorBasis{b: make([]int, 64)}  // or 32
+	b.rightMost = make([]int, len(b.b)) // 注意这里是 0
+	b.rightMostZero = -1                // 注意这里是 -1
 	for _, v := range a {
 		b.insert(v)
 	}
@@ -432,10 +473,10 @@ func (b *xorBasis) insert(v int) bool {
 }
 
 // EXTRA: 如果遇到线性相关的基，保留位置最靠右的
+// https://atcoder.jp/contests/abc223/tasks/abc223_h
+// https://codeforces.com/problemset/problem/1902/F 2400
 // https://codeforces.com/problemset/problem/1100/F 2500
 // https://codeforces.com/problemset/problem/1778/E 2500
-// https://codeforces.com/problemset/problem/1902/F 2400
-// https://atcoder.jp/contests/abc223/tasks/abc223_h
 func (b *xorBasis) insertRightMost(idx, v int) bool {
 	// 从高到低遍历，方便计算下面的 maxXor 和 minXor
 	for i := len(b.b) - 1; i >= 0; i-- {
@@ -455,6 +496,7 @@ func (b *xorBasis) insertRightMost(idx, v int) bool {
 		v ^= b.b[i]
 	}
 	b.canBeZero = true // 没有找到，但这说明了可以选一些数使得异或和为 0
+	b.rightMostZero = max(b.rightMostZero, idx)
 	return false
 }
 
@@ -464,7 +506,8 @@ func (b *xorBasis) decompose(v int) bool {
 		if v>>i&1 == 0 {
 			continue
 		}
-		if b.b[i] == 0 { // || b.rightMost[i] < lowerIndex
+		// b.b[i] == 0 || b.rightMost[i] < lowerIndex
+		if b.b[i] == 0 {
 			return false
 		}
 		v ^= b.b[i]

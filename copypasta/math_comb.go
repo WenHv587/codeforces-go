@@ -38,12 +38,15 @@ LC2539 https://leetcode.cn/problems/count-the-number-of-good-subsequences/（会
 - [LCP 25. 古董键盘](https://leetcode.cn/problems/Uh984O/)
 另见下面的「放球问题」
 入门 https://atcoder.jp/contests/abc202/tasks/abc202_d
+https://codeforces.com/problemset/problem/1879/C 1300
 https://codeforces.com/problemset/problem/1236/B 1500
 https://codeforces.com/problemset/problem/1391/C 1500
 https://codeforces.com/problemset/problem/1288/C 1600
 https://codeforces.com/problemset/problem/1475/E 1600
+https://codeforces.com/problemset/problem/1999/F 1600
 https://codeforces.com/problemset/problem/300/C 1800
 https://codeforces.com/problemset/problem/869/C 1800
+https://codeforces.com/problemset/problem/109/C 1900 也可以换根 DP
 https://codeforces.com/problemset/problem/213/B 1900
 https://codeforces.com/problemset/problem/1359/E 2000
 https://codeforces.com/problemset/problem/1931/G 2000 放球问题 构造
@@ -53,6 +56,7 @@ https://codeforces.com/problemset/problem/1761/D 2100
 https://codeforces.com/problemset/problem/520/E 2200
 https://codeforces.com/problemset/problem/559/C 2200
 https://codeforces.com/problemset/problem/1763/D 2200 推荐 分类讨论
+https://codeforces.com/problemset/problem/1946/E 2200 排列
 https://codeforces.com/problemset/problem/1204/E 2300 推荐
 https://codeforces.com/problemset/problem/1342/E 2300
 https://codeforces.com/problemset/problem/1261/D2 2400 推荐
@@ -61,6 +65,7 @@ https://atcoder.jp/contests/abc171/tasks/abc171_f 推荐 巧妙去重
 加强版 https://codeforces.com/contest/1838/problem/E 2500
 - 把子序列改成子串 https://oj.socoding.cn/p/1446 https://leetcode.cn/problems/find-all-good-strings/
 - https://github.com/tdzl2003/leetcode_live/blob/master/socoding/1446.md
+https://codeforces.com/problemset/problem/140/E 2600 推荐
 https://atcoder.jp/contests/abc290/tasks/abc290_f
 todo https://www.luogu.com.cn/problem/P6017
 
@@ -380,7 +385,8 @@ func (c *comb) p(n, k int) int {
 // - [3130. 找出所有稳定的二进制数组 II](https://leetcode.cn/problems/find-all-possible-stable-binary-arrays-ii/) 2825
 //    - n 个无区别的小球放入 m 个有区别的盒子，不允许空盒，每盒至多 limit 个球
 // https://codeforces.com/problemset/problem/630/K 1500
-// https://codeforces.com/problemset/problem/900/D 2000 用因子容斥 
+// https://codeforces.com/problemset/problem/900/D 2000 因子容斥
+// https://codeforces.com/problemset/problem/2037/G 2000 因子容斥
 // https://codeforces.com/problemset/problem/1228/E 2300 如何将问题转化成可以容斥的结构 
 // https://codeforces.com/problemset/problem/1342/E 2300
 // https://codeforces.com/problemset/problem/449/D 2400 与 SOS DP 结合 

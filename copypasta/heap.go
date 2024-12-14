@@ -12,6 +12,9 @@ https://leetcode.cn/circle/discuss/mOr1u6/
 可视化 https://visualgo.net/zh/heap
 【证明】堆化的时间复杂度为 O(n) https://leetcode.cn/problems/take-gifts-from-the-richest-pile/solution/yuan-di-dui-hua-o1-kong-jian-fu-ti-dan-p-fzdh/
 
+动态维护最大的 k 个数用最小堆，动态维护最小的 k 个数用最大堆
+https://codeforces.com/problemset/problem/1969/D 1900
+
 #### 第 K 小/大（值/和）
 - [703. 数据流中的第 K 大元素](https://leetcode.cn/problems/kth-largest-element-in-a-stream/)
 - [2558. 从数量最多的堆取走礼物](https://leetcode.cn/problems/take-gifts-from-the-richest-pile/) 1277
@@ -92,6 +95,7 @@ https://codeforces.com/problemset/problem/1526/C2 1600
 https://codeforces.com/problemset/problem/1779/C 1600 前缀和 推荐
 https://codeforces.com/problemset/problem/730/I 2000
 - 加强版 https://atcoder.jp/contests/agc018/tasks/agc018_c
+https://codeforces.com/problemset/problem/1974/G 2000
 https://codeforces.com/problemset/problem/1428/E 2200 用堆来不断修正最优决策
 https://codeforces.com/problemset/problem/865/D 2400 股票买卖
 https://codeforces.com/problemset/problem/3/D 2600 难度虚高
@@ -214,6 +218,7 @@ func (h *mh) remove(i int) *viPair { return heap.Remove(h, i).(*viPair) }
 // LC3092 https://leetcode.cn/problems/most-frequent-ids/
 // https://codeforces.com/problemset/problem/1883/D 1500
 // https://codeforces.com/problemset/problem/796/C 1900
+// https://codeforces.com/problemset/problem/2009/G2 2200
 // https://codeforces.com/problemset/problem/1732/D2 2400 简化版懒删除堆
 type lazyHeap struct {
 	sort.IntSlice
@@ -222,7 +227,8 @@ type lazyHeap struct {
 	sum  int // 实际元素和（可选）
 }
 
-func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] } // 最大堆
+// 最大堆
+func (h lazyHeap) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] }
 func (h *lazyHeap) Push(v any)        { h.IntSlice = append(h.IntSlice, v.(int)) }
 func (h *lazyHeap) Pop() any          { a := h.IntSlice; v := a[len(a)-1]; h.IntSlice = a[:len(a)-1]; return v }
 func (h *lazyHeap) del(v int)         { h.todo[v]++; h.size--; h.sum -= v } // 懒删除
@@ -257,6 +263,7 @@ func (h *lazyHeap) pushPop(v int) int {
 // 保证 1 <= k <= windowSize <= n
 // 返回数组 kthSum，其中 kthSum[i] 为 a[i:i+windowSize] 的前 k 小元素和
 // - [3013. 将数组分成最小总代价的子数组 II](https://leetcode.cn/problems/divide-an-array-into-subarrays-with-minimum-cost-ii/) 2540
+// - https://leetcode.cn/problems/find-x-sum-of-all-k-long-subarrays-ii/
 // 另见 treap_kthsum.go
 func slidingWindowKthSum(a []int, windowSize, k int) []int {
 	h := newKthHeap()
@@ -336,5 +343,6 @@ func (h *kthHeap) balance(k int) {
 
 // 其它题目
 // 求前缀/后缀的最小的 k 个元素和（k 固定）https://www.luogu.com.cn/problem/P4952 https://www.luogu.com.cn/problem/P3963
+// - https://www.codechef.com/problems/OKLAMA
 // LC480 滑动窗口中位数 https://leetcode.cn/problems/sliding-window-median/
 // https://codeforces.com/contest/1374/problem/E2 代码 https://codeforces.com/contest/1374/submission/193671570

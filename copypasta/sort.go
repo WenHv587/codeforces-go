@@ -16,8 +16,12 @@ BFPRT https://en.wikipedia.org/wiki/Median_of_medians
 打造 Go 语言最快的排序算法 https://blog.csdn.net/ByteDanceTech/article/details/124464192
 sort.Ints 性能测试 https://codeforces.com/contest/977/submission/75301978
 
-利用这题测试一下，你有没有学到二分的本质？
-https://codeforces.com/contest/1945/problem/E
+长为 n 的二分区间，最坏情况下的二分次数，等于 n 的二进制长度 bits.Len(n)
+
+测试一下，你有没有学到二分的本质？
+https://codeforces.com/contest/1945/problem/E 1700
+https://codeforces.com/contest/1999/problem/G2 1700
+https://codeforces.com/problemset/problem/1624/F 2000
 
 LC853 https://leetcode.cn/problems/car-fleet/
 自定义排序 LC1366 https://leetcode.cn/problems/rank-teams-by-votes/ 1626
@@ -72,15 +76,20 @@ https://atcoder.jp/contests/abc248/tasks/abc248_d
 ### 二分答案：求最小
 https://codeforces.com/problemset/problem/1701/C 1400
 https://codeforces.com/problemset/problem/991/C 1500
+https://codeforces.com/problemset/problem/1208/B 1500
 https://codeforces.com/problemset/problem/1665/C 1600
 https://codeforces.com/problemset/problem/1843/E 1600
 https://codeforces.com/problemset/problem/1118/D2 1700
+https://codeforces.com/problemset/problem/2037/F 2100
 
 ### 二分答案：求最大
 https://codeforces.com/problemset/problem/670/D2 1500
 https://codeforces.com/problemset/problem/760/B 1500
+https://codeforces.com/problemset/problem/812/C 1500 同时记录一个副产物
 https://codeforces.com/problemset/problem/1610/C 1600
+https://codeforces.com/problemset/problem/1946/C 1600
 https://codeforces.com/problemset/problem/1260/D 1900 区间合并
+https://codeforces.com/problemset/problem/1996/F 1900 二分间接值
 
 ### 最小化最大值（二分最大值 mx，如果满足要求，例如所有元素最后都 <= mx 则返回 true，否则返回 false，也就是满足要求就让 right 变小，不满足要求就让 left 变大）
 - [410. 分割数组的最大值](https://leetcode.cn/problems/split-array-largest-sum/)
@@ -92,6 +101,7 @@ https://codeforces.com/problemset/problem/1260/D 1900 区间合并
 - [778. 水位上升的泳池中游泳](https://leetcode.cn/problems/swim-in-rising-water/) 2097 *相当于最小化路径最大值
 - [2616. 最小化数对的最大差值](https://leetcode.cn/problems/minimize-the-maximum-difference-of-pairs/) 2155
 - [2513. 最小化两个数组中的最大值](https://leetcode.cn/problems/minimize-the-maximum-of-two-arrays/) 2302
+- [LCP 12. 小张刷题计划](https://leetcode.cn/problems/xiao-zhang-shua-ti-ji-hua/)
 - [774. 最小化去加油站的最大距离](https://leetcode.cn/problems/minimize-max-distance-to-gas-station/)（会员题）
 https://www.lanqiao.cn/problems/5129/learning/?contest_id=144
 https://codeforces.com/problemset/problem/1840/D 1400
@@ -104,13 +114,21 @@ https://codeforces.com/problemset/problem/1837/F 2400
    同一题 [2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/) 2021
 - [2812. 找出最安全路径](https://leetcode.cn/problems/find-the-safest-path-in-a-grid/) 2154
 - [2528. 最大化城市的最小供电站数目](https://leetcode.cn/problems/maximize-the-minimum-powered-city/) 2236
-- [LCP 12. 小张刷题计划](https://leetcode.cn/problems/xiao-zhang-shua-ti-ji-hua/)
 - [1231. 分享巧克力](https://leetcode.cn/problems/divide-chocolate/)（会员题）2029
 https://codeforces.com/problemset/problem/1623/C 1600
 https://codeforces.com/problemset/problem/460/C 1700
 https://codeforces.com/problemset/problem/1550/E 2500
 
+### 最小化中位数
+https://codeforces.com/contest/2008/problem/H 2100
+
+### 最大化中位数
+https://codeforces.com/problemset/problem/1201/C 1400 也可以贪心做
+https://codeforces.com/contest/1993/problem/D 2200
+
 ### 第 K 小/大（部分题目也可以用堆解决）
+第 k 小等价于：求最小的 x，满足 <= x 的数至少有 k 个（k 从 1 开始）
+第 k 大等价于：求最大的 x，满足 >= x 的数至少有 k 个（k 从 1 开始）
 - [378. 有序矩阵中第 K 小的元素](https://leetcode.cn/problems/kth-smallest-element-in-a-sorted-matrix/)
 - [668. 乘法表中第 K 小的数](https://leetcode.cn/problems/kth-smallest-number-in-multiplication-table/)
 - [373. 查找和最小的 K 对数字](https://leetcode.cn/problems/find-k-pairs-with-smallest-sums/)
@@ -134,11 +152,8 @@ https://codeforces.com/problemset/problem/1550/E 2500
 - [33. 搜索旋转排序数组](https://leetcode.cn/problems/search-in-rotated-sorted-array/)
 - [540. 有序数组中的单一元素](https://leetcode.cn/problems/single-element-in-a-sorted-array/)
 
-#### 最大化中位数
-https://codeforces.com/problemset/problem/1201/C  也可以贪心做
-
 #### 不好想到的二分（这也能二分？！）
-https://codeforces.com/problemset/problem/1707/A
+https://codeforces.com/problemset/problem/1707/A 1600
 
 《挑战》3.1 节练习题
 3258 https://www.luogu.com.cn/problem/P2855 二分最小值
@@ -156,10 +171,10 @@ https://codeforces.com/problemset/problem/1707/A
 1759 http://poj.org/problem?id=1759 递推式变形成差分，这样可以二分 B，判断最小值是否非负
 3484 https://www.acwing.com/problem/content/122/ 二分位置
 
-https://codeforces.com/problemset/problem/1697/D
-隐藏的二分 https://atcoder.jp/contests/abc203/tasks/abc203_d
-隐藏的二分 https://codeforces.com/problemset/problem/1354/D
-转换的好题 https://codeforces.com/problemset/problem/1181/D
+https://codeforces.com/problemset/problem/1697/D 1900
+https://atcoder.jp/contests/abc203/tasks/abc203_d 隐藏的二分
+https://codeforces.com/problemset/problem/1354/D 1900 隐藏的二分
+https://codeforces.com/problemset/problem/1181/D 2200 转换的好题
 
 第 k 小子序列和 https://codeforces.com/gym/101234/problem/G https://leetcode.cn/problems/find-the-k-sum-of-an-array/
 - 思路见我的题解 https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/
@@ -222,6 +237,25 @@ func sortCollections() {
 		// 判断是否为严格递减序列
 		sort.SliceIsSorted(a, func(i, j int) bool { return a[i] >= a[j] })
 		slices.IsSortedFunc(a, func(x, y int) int { return y - x - 1 })
+
+		var x int
+		_ = []any{
+			sort.SearchInts(a, x),       // >= x 的第一个数的下标，若不存在则为 len(a)
+			sort.SearchInts(a, x+1),     // >  x 的第一个数的下标，若不存在则为 len(a)
+			sort.SearchInts(a, x+1) - 1, // <= x 的最后一个数的下标，若不存在则为 -1
+			sort.SearchInts(a, x) - 1,   // <  x 的最后一个数的下标，若不存在则为 -1
+		}
+
+		// 注：浮点数可以用 Nextafter 算出 > x 的下一个浮点数
+		math.Nextafter(float64(x), math.MaxFloat64) // x=1 时，结果为 1.0000000000000002
+		math.Nextafter(float64(x), -math.MaxFloat64) // x=1 时，结果为 0.9999999999999999
+
+		_ = []any{
+			sort.SearchInts(a, x+1),          // <= x 的元素个数
+			sort.SearchInts(a, x),            // <  x 的元素个数
+			len(a) - sort.SearchInts(a, x),   // >= x 的元素个数
+			len(a) - sort.SearchInts(a, x+1), // >  x 的元素个数
+		}
 	}
 
 	// a 是一个非降的有很多重复元素的数组，返回 a 中不同元素个数

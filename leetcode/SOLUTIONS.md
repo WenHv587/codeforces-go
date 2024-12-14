@@ -7,7 +7,8 @@
 |知识点|题目|题解|难度|
 |---|---|---|---|
 |哈希表|[1. 两数之和](https://leetcode.cn/problems/two-sum/)|[【动画】从两数之和中，我们可以学到什么？](https://leetcode.cn/problems/two-sum/solution/dong-hua-cong-liang-shu-zhi-he-zhong-wo-0yvmj/)|简单|
-|链表|[2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)|[【动画】简洁写法！从递归到迭代！](https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/)|中等|
+|链表|[160. 相交链表](https://leetcode.cn/problems/intersection-of-two-linked-lists/)|[【图解】一张图秒懂相交链表！](https://leetcode.cn/problems/intersection-of-two-linked-lists/solution/tu-jie-yi-zhang-tu-miao-dong-xiang-jiao-m6tg1/)|简单|
+||[2. 两数相加](https://leetcode.cn/problems/add-two-numbers/)|[【动画】简洁写法！从递归到迭代！](https://leetcode.cn/problems/add-two-numbers/solution/dong-hua-jian-ji-xie-fa-cong-di-gui-dao-oe0di/)|中等|
 ||[23. 合并 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/)|[两种方法：最小堆/分治](https://leetcode.cn/problems/merge-k-sorted-lists/solution/liang-chong-fang-fa-zui-xiao-dui-fen-zhi-zbzx/)|困难|
 |双向链表|[146. LRU 缓存](https://leetcode.cn/problems/lru-cache/)|[【图解】一张图秒懂 LRU！](https://leetcode.cn/problems/lru-cache/solution/tu-jie-yi-zhang-tu-miao-dong-lrupythonja-czgt/)|中等|
 ||[460. LFU 缓存](https://leetcode.cn/problems/lfu-cache/)|[【图解】一张图秒懂 LFU！](https://leetcode.cn/problems/lfu-cache/solution/tu-jie-yi-zhang-tu-miao-dong-lfupythonja-f56h/)|困难|
@@ -26,6 +27,7 @@
 ||[878. 第 N 个神奇数字](https://leetcode.cn/problems/nth-magical-number/)|[【图解】二分答案+容斥原理](https://leetcode.cn/problems/nth-magical-number/solution/er-fen-da-an-rong-chi-yuan-li-by-endless-9j34/)|1897|
 ||[2594. 修车的最少时间](https://leetcode.cn/problems/minimum-time-to-repair-cars/)|[二分答案+优化（附题单！）](https://leetcode.cn/problems/minimum-time-to-repair-cars/solution/er-fen-da-an-pythonjavacgo-by-endlessche-keqf/)|1915|
 ||[2517. 礼盒的最大甜蜜度](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/)|[【套路】二分答案！附题单！](https://leetcode.cn/problems/maximum-tastiness-of-candy-basket/solution/er-fen-da-an-by-endlesscheng-r418/)|2021|
+||[4. 寻找两个正序数组的中位数](https://leetcode.cn/problems/median-of-two-sorted-arrays/)|[【图解】循序渐进：从双指针到二分](https://leetcode.cn/problems/median-of-two-sorted-arrays/solution/tu-jie-xun-xu-jian-jin-cong-shuang-zhi-z-p2gd/)|困难|
 ||[2386. 找出数组的第 K 大和](https://leetcode.cn/problems/find-the-k-sum-of-an-array/)|[两种方法：二分答案+爆搜/最小堆](https://leetcode.cn/problems/find-the-k-sum-of-an-array/solution/zhuan-huan-dui-by-endlesscheng-8yiq/)|2648|
 |技巧性枚举|[1638. 统计只差一个字符的子串数目](https://leetcode.cn/problems/count-substrings-that-differ-by-one-character/)|[【图解】非暴力 O(nm) 算法](https://leetcode.cn/problems/count-substrings-that-differ-by-one-character/solution/tu-jie-fei-bao-li-onm-suan-fa-pythonjava-k5og/)|1745|
 |前后缀分解|[1653. 使字符串平衡的最少删除次数](https://leetcode.cn/problems/minimum-deletions-to-make-string-balanced/)|[【图解】前后缀分解，消除分支的技巧！（附动态规划）](https://leetcode.cn/problems/minimum-deletions-to-make-string-balanced/solution/qian-hou-zhui-fen-jie-yi-zhang-tu-miao-d-dor2/)|1794|
@@ -96,7 +98,7 @@
 ||[1617. 统计子树中城市之间最大距离](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/)|[【图解】回溯/二进制枚举/O(n^3)枚举直径端点](https://leetcode.cn/problems/count-subtrees-with-max-distance-between-cities/solution/tu-jie-on3-mei-ju-zhi-jing-duan-dian-che-am2n/)|2309|
 ||[1187. 使数组严格递增](https://leetcode.cn/problems/make-array-strictly-increasing/)|[最长递增子序列的变形：选或不选/枚举选哪个](https://leetcode.cn/problems/make-array-strictly-increasing/solution/zui-chang-di-zeng-zi-xu-lie-de-bian-xing-jhgg/)|2316|
 ||[2312. 卖木头块](https://leetcode.cn/problems/selling-pieces-of-wood/)|[枚举切割位置+循环优化](https://leetcode.cn/problems/selling-pieces-of-wood/solution/by-endlesscheng-mrmd/)|2363|
-||[741. 摘樱桃](https://leetcode.cn/problems/cherry-pickup/solutions/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/cherry-pickup/solution/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-ruue/)|困难|
+||[741. 摘樱桃](https://leetcode.cn/problems/cherry-pickup/)|[教你一步步思考动态规划！](https://leetcode.cn/problems/cherry-pickup/solution/jiao-ni-yi-bu-bu-si-kao-dpcong-ji-yi-hua-ruue/)|困难|
 ||[1349. 参加考试的最大学生数](https://leetcode.cn/problems/maximum-students-taking-exam/)|[【图解】状压 DP 的两种状态设计思路](https://leetcode.cn/problems/maximum-students-taking-exam/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-9y5k/)|2386|
 ||[1000. 合并石头的最低成本](https://leetcode.cn/problems/minimum-cost-to-merge-stones/)|[【图解】区间 DP：状态设计与优化](https://leetcode.cn/problems/minimum-cost-to-merge-stones/solution/tu-jie-qu-jian-dpzhuang-tai-she-ji-yu-yo-ppv0/)|2423|
 ||[1595. 连通两组点的最小成本](https://leetcode.cn/problems/minimum-cost-to-connect-two-groups-of-points/)|[教你一步步思考动态规划！（附题单）](https://leetcode.cn/problems/minimum-cost-to-connect-two-groups-of-points/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-djxq/)|2423|
@@ -104,23 +106,27 @@
 ||[1883. 准时抵达会议现场的最小跳过休息次数](https://leetcode.cn/problems/minimum-skips-to-arrive-at-meeting-on-time/)|[【避免浮点误差】教你一步步思考动态规划！](https://leetcode.cn/problems/minimum-skips-to-arrive-at-meeting-on-time/solution/jiao-ni-yi-bu-bu-si-kao-dong-tai-gui-hua-gxd2/)|2588|
 ||[2902. 和带限制的子多重集合的数目](https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/)|[多重背包方案数：从朴素 DP 到优化](https://leetcode.cn/problems/count-of-sub-multisets-with-bounded-sum/solution/duo-zhong-bei-bao-fang-an-shu-cong-po-su-f5ay/)|2758|
 ||[2809. 使数组和小于等于 x 的最少时间](https://leetcode.cn/problems/minimum-time-to-make-array-sum-at-most-x/)|[教你一步步思考本题！](https://leetcode.cn/problems/minimum-time-to-make-array-sum-at-most-x/solution/jiao-ni-yi-bu-bu-si-kao-ben-ti-by-endles-2eho/)|2979|
+||[3225. 网格图操作后的最大分数](https://leetcode.cn/problems/maximum-score-from-grid-operations/)|[【图解】DP 及其优化：从 n^4 到 n^3 到 n^2](https://leetcode.cn/problems/maximum-score-from-grid-operations/solution/tu-jie-dp-ji-qi-you-hua-by-endlesscheng-pco6/)|3028|
 |数学|[50. Pow(x, n)](https://leetcode.cn/problems/powx-n/)|[【图解】一张图秒懂快速幂！](https://leetcode.cn/problems/powx-n/solution/tu-jie-yi-zhang-tu-miao-dong-kuai-su-mi-ykp3i/)|中等|
 ||[1954. 收集足够苹果的最小花园周长](https://leetcode.cn/problems/minimum-garden-perimeter-to-collect-enough-apples/)|[【图解】O(1) 做法](https://leetcode.cn/problems/minimum-garden-perimeter-to-collect-enough-apples/solution/tu-jie-o1-zuo-fa-pythonjavacgojsrust-by-oms4k/)|1759|
 ||[1016. 子串能表示从 1 到 N 数字的二进制串](https://leetcode.cn/problems/binary-string-with-substrings-representing-1-to-n/)|[三种算法：从暴力到优化](https://leetcode.cn/problems/binary-string-with-substrings-representing-1-to-n/solution/san-chong-suan-fa-cong-bao-li-dao-you-hu-nmtq/)|1779|
 ||[1015. 可被 K 整除的最小整数](https://leetcode.cn/problems/smallest-integer-divisible-by-k/)|[【图解】三种算法+优化](https://leetcode.cn/problems/smallest-integer-divisible-by-k/solution/san-chong-suan-fa-you-hua-pythonjavacgo-tk4cj/)|1875|
 ||[754. 到达终点数字](https://leetcode.cn/problems/reach-a-number/)|[【图解】分类讨论+详细证明+简洁写法+优化](https://leetcode.cn/problems/reach-a-number/solution/fen-lei-tao-lun-xiang-xi-zheng-ming-jian-sqj2/)|1880|
+||[1884. 鸡蛋掉落-两枚鸡蛋](https://leetcode.cn/problems/egg-drop-with-2-eggs-and-n-floors/)|[两种方法：动态规划/数学](https://leetcode.cn/problems/egg-drop-with-2-eggs-and-n-floors/solution/liang-chong-fang-fa-dong-tai-gui-hua-shu-hd4i/)|中等|
 ||[1739. 放置盒子](https://leetcode.cn/problems/building-boxes/)|[【动画】没想明白？一个动画秒懂！附 O(1) 做法](https://leetcode.cn/problems/building-boxes/solution/mei-xiang-ming-bai-yi-ge-dong-hua-miao-d-8vbe/)|2198|
-||[3102. 最小化曼哈顿距离](https://leetcode.cn/problems/minimize-manhattan-distances/)|[【图解】曼哈顿距离转切比雪夫距离](https://leetcode.cn/problems/minimize-manhattan-distances/solution/tu-jie-man-ha-dun-ju-chi-heng-deng-shi-b-op84/)|待定|
+||[3102. 最小化曼哈顿距离](https://leetcode.cn/problems/minimize-manhattan-distances/)|[【图解】曼哈顿距离转切比雪夫距离](https://leetcode.cn/problems/minimize-manhattan-distances/solution/tu-jie-man-ha-dun-ju-chi-heng-deng-shi-b-op84/)|2216|
 ||[1330. 翻转子数组得到最大的数组值](https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/)|[不会化简？请看这！](https://leetcode.cn/problems/reverse-subarray-to-maximize-array-value/solution/bu-hui-hua-jian-qing-kan-zhe-pythonjavac-c2s6/)|2482|
 ||[1735. 生成乘积数组的方案数](https://leetcode.cn/problems/count-ways-to-make-array-with-product/)|[【图解】质因子分解+放球问题](https://leetcode.cn/problems/count-ways-to-make-array-with-product/solution/tu-jie-zhi-yin-zi-fen-jie-fang-qiu-wen-t-fboo/)|2500|
 ||[1819. 序列中不同最大公约数的数目](https://leetcode.cn/problems/number-of-different-subsequences-gcds/)|[击败100%！枚举GCD+循环优化](https://leetcode.cn/problems/number-of-different-subsequences-gcds/solution/ji-bai-100mei-ju-gcdxun-huan-you-hua-pyt-get7/)|2540|
 ||[3139. 使数组中所有元素相等的最小开销](https://leetcode.cn/problems/minimum-cost-to-equalize-array/)|[分类讨论，O(n) 做法](https://leetcode.cn/problems/minimum-cost-to-equalize-array/solution/fen-lei-tao-lun-on-zuo-fa-pythonjavacgo-9bsb4/)|2666|
+||[3235. 判断矩形的两个角落是否可达](https://leetcode.cn/problems/check-if-the-rectangle-corner-is-reachable/)|[【图解】转换成图上 DFS + 避免浮点数的做法](https://leetcode.cn/problems/check-if-the-rectangle-corner-is-reachable/solution/deng-jie-zhuan-huan-bing-cha-ji-pythonja-yf9y/)||
 |贪心|[1144. 递减元素使数组呈锯齿状](https://leetcode.cn/problems/decrease-elements-to-make-array-zigzag/)|[没有思路？一步步提示你思考！](https://leetcode.cn/problems/decrease-elements-to-make-array-zigzag/solution/mei-you-si-lu-yi-bu-bu-ti-shi-ni-si-kao-cm0h2/)|1559|
 ||[1247. 交换字符使得字符串相同](https://leetcode.cn/problems/minimum-swaps-to-make-strings-equal/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/minimum-swaps-to-make-strings-equal/solution/mei-xiang-ming-bai-yi-zhang-tu-miao-dong-a6r1/)|1597|
 ||[870. 优势洗牌](https://leetcode.cn/problems/advantage-shuffle/)|[田忌赛马](https://leetcode.cn/problems/advantage-shuffle/solution/tian-ji-sai-ma-by-endlesscheng-yxm6/)|1648|
 ||[1402. 做菜顺序](https://leetcode.cn/problems/reducing-dishes/)|[枚举做几道菜+贪心](https://leetcode.cn/problems/reducing-dishes/solution/mei-ju-zuo-ji-dao-cai-tan-xin-pythonjava-k7w2/)|1679|
 ||[1145. 二叉树着色游戏](https://leetcode.cn/problems/binary-tree-coloring-game/)|[【图解】没有思路？一张图秒懂！](https://leetcode.cn/problems/binary-tree-coloring-game/solution/mei-you-si-lu-yi-zhang-tu-miao-dong-pyth-btav/)|1741|
 ||[1262. 可被三整除的最大和](https://leetcode.cn/problems/greatest-sum-divisible-by-three/)|[两种算法：贪心/动态规划](https://leetcode.cn/problems/greatest-sum-divisible-by-three/solution/liang-chong-suan-fa-tan-xin-dong-tai-gui-tsll/)|1762|
+||[134. 加油站](https://leetcode.cn/problems/gas-station/)|[用【折线图】直观理解](https://leetcode.cn/problems/gas-station/solutions/2933132/yong-zhe-xian-tu-zhi-guan-li-jie-pythonj-qccr/)|中等|
 ||[1775. 通过最少操作次数使数组的和相等](https://leetcode.cn/problems/equal-sum-arrays-with-minimum-number-of-operations/)|[【动画】没想明白？一个动画秒懂！](https://leetcode.cn/problems/equal-sum-arrays-with-minimum-number-of-operations/solution/mei-xiang-ming-bai-yi-ge-dong-hua-miao-d-ocuu/)|1850|
 ||[1616. 分割两个字符串得到回文串](https://leetcode.cn/problems/split-two-strings-to-make-palindrome/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/split-two-strings-to-make-palindrome/solution/mei-xiang-ming-bai-yi-zhang-tu-miao-dong-imvy/)|1868|
 ||[1326. 灌溉花园的最少水龙头数目](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/)|[【图解】没想明白？一张图秒懂！](https://leetcode.cn/problems/minimum-number-of-taps-to-open-to-water-a-garden/solution/yi-zhang-tu-miao-dong-pythonjavacgo-by-e-wqry/)|1885|
@@ -137,6 +143,7 @@
 |思维题|[1657. 确定两个字符串是否接近](https://leetcode.cn/problems/determine-if-two-strings-are-close/)|[理解操作本质+简洁写法](https://leetcode.cn/problems/determine-if-two-strings-are-close/solution/li-jie-cao-zuo-ben-zhi-jian-ji-xie-fa-py-b18i/)|1530|
 ||[1040. 移动石子直到连续 II](https://leetcode.cn/problems/moving-stones-until-consecutive-ii/)|[【图解】下跳棋](https://leetcode.cn/problems/moving-stones-until-consecutive-ii/solution/tu-jie-xia-tiao-qi-pythonjavacgo-by-endl-r1eb/)|2456|
 ||[1803. 统计异或值在范围内的数对有多少](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/)|[【图解】不会字典树？只用哈希表也能做！](https://leetcode.cn/problems/count-pairs-with-xor-in-a-range/solution/bu-hui-zi-dian-shu-zhi-yong-ha-xi-biao-y-p2pu/)|2479|
+||[782. 变为棋盘](https://leetcode.cn/problems/transform-to-chessboard/)|[【图解】逆向思维](https://leetcode.cn/problems/transform-to-chessboard/solution/tu-jie-ni-xiang-si-wei-pythonjavaccgojsr-mixb/)|困难|
 |网格图|[面试题 16.19. 水域大小](https://leetcode.cn/problems/pond-sizes-lcci/)|[【模板】网格图 DFS（附题单！）](https://leetcode.cn/problems/pond-sizes-lcci/solution/mo-ban-wang-ge-tu-dfsfu-ti-dan-by-endles-p0n1/)|中等|
 ||[1254. 统计封闭岛屿的数目](https://leetcode.cn/problems/number-of-closed-islands/)|[【动画】两种思路：先外后内/出界标记（附题单！）](https://leetcode.cn/problems/number-of-closed-islands/solution/liang-chong-si-lu-xian-wai-hou-nei-chu-j-b1e4/)|1659|
 ||[2258. 逃离火灾](https://leetcode.cn/problems/escape-the-spreading-fire/)|[【图解】两种方法：二分答案 / 直接计算](https://leetcode.cn/problems/escape-the-spreading-fire/solution/er-fen-bfspythonjavacgo-by-endlesscheng-ypp1/)|2347|
@@ -158,9 +165,9 @@
 
 ### 分类题单
 
-[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
+🔥[如何科学刷题？](https://leetcode.cn/circle/discuss/RvFUtj/)
 
-1. [滑动窗口（定长/不定长/多指针）](https://leetcode.cn/circle/discuss/0viNMK/)
+1. [滑动窗口与双指针（定长/不定长/单序列/双序列/三指针/分组循环）](https://leetcode.cn/circle/discuss/0viNMK/)
 2. [二分算法（二分答案/最小化最大值/最大化最小值/第K小）](https://leetcode.cn/circle/discuss/SqopEo/)
 3. [单调栈（基础/矩形面积/贡献法/最小字典序）](https://leetcode.cn/circle/discuss/9oZFK9/)
 4. [网格图（DFS/BFS/综合应用）](https://leetcode.cn/circle/discuss/YiXPXW/)
@@ -169,7 +176,9 @@
 7. 🔥[动态规划（入门/背包/状态机/划分/区间/状压/数位/数据结构优化/树形/博弈/概率期望）](https://leetcode.cn/circle/discuss/tXLS3i/)
 8. [常用数据结构（前缀和/差分/栈/队列/堆/字典树/并查集/树状数组/线段树）](https://leetcode.cn/circle/discuss/mOr1u6/)
 9. [数学算法（数论/组合/概率期望/博弈/计算几何/随机算法）](https://leetcode.cn/circle/discuss/IYT3ss/)
-10. [贪心算法（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+10. [贪心与思维（基本贪心策略/反悔/区间/字典序/数学/思维/脑筋急转弯/构造）](https://leetcode.cn/circle/discuss/g6KTKL/)
+11. [链表、二叉树与回溯（前后指针/快慢指针/DFS/BFS/直径/LCA/一般树）](https://leetcode.cn/circle/discuss/K0n2gO/)
+12. [字符串（KMP/Z函数/Manacher/字符串哈希/AC自动机/后缀数组/子序列自动机）](https://leetcode.cn/circle/discuss/SJFwQI/)
 
 ### 周赛总结
 
